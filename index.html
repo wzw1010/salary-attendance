@@ -32,10 +32,10 @@
             flex-direction: column;
             background: #0d0d11;
             overflow-x: hidden;
-            /* 不再全局加安全区，避免底部导航偏移 */
+            position: relative;
         }
 
-        /* 顶部栏单独处理安全区 */
+        /* 顶部栏安全区 */
         .nav-header {
             background: rgba(18, 18, 26, 0.85);
             backdrop-filter: blur(20px);
@@ -80,11 +80,12 @@
         }
         .month-arrow:active { background: rgba(255,255,255,0.15); }
 
+        /* 滚动区域自动撑满剩余空间 */
         .main-scroll {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 46px 16px 20px;
+            padding: 16px 16px 20px;
             scrollbar-width: thin;
         }
         .tab-pane { display: none; animation: fade 0.2s ease; }
@@ -160,7 +161,7 @@
             font-weight: 800;
             color: white;
         }
-        /* 排班日历外层透明卡片 */
+        /* 排班日历外层透明卡片（仅分组，不改变视觉） */
         .schedule-card {
             background: transparent;
             border-radius: 0;
@@ -244,7 +245,7 @@
         .edit-trigger svg { width: 20px; height: 20px; stroke: #aaa; stroke-width: 1.8; transition: stroke 0.1s; }
         .edit-trigger.done svg { stroke: #F0B90B; }
 
-        /* 底部导航独立固定，加安全区 padding-bottom */
+        /* 底部导航 - 固定在底部，加安全区padding-bottom */
         .bottom-nav {
             background: #0f0f13;
             border-top: 1px solid rgba(255,255,255,0.05);
@@ -261,7 +262,7 @@
         .nav-item svg [fill] { fill: currentColor; }
         .nav-label { font-size: 11px; font-weight: 600; }
 
-        /* 薪资八宫格 */
+        /* 薪资八宫格包裹卡片 */
         .params-wrapper {
             background: transparent;
             border-radius: 0;
