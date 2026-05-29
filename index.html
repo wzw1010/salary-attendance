@@ -32,6 +32,9 @@
             flex-direction: column;
             background: #0d0d11;
             overflow-x: hidden;
+            /* 安全区域适配 */
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         /* 顶部栏 */
@@ -51,7 +54,7 @@
             gap: 8px;
             font-weight: 600;
             font-size: 15px;
-            color: #F0B90B;  /* 改为黄色 */
+            color: #F0B90B;
         }
         .header-title svg {
             width: 22px;
@@ -435,7 +438,6 @@
 <div class="app">
     <div class="nav-header">
         <div class="header-title">
-            <!-- 自定义图标 -->
             <svg fill="currentColor" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 210 256" enable-background="new 0 0 210 256" xml:space="preserve">
                 <path d="M174.55,144.5L174.55,144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.708-9.292-21-21-21H25C12.57,2,2,12.57,2,25v183
                     c0,11.9,10.95,22,22.75,22l114.213,0c1.207,0,2.27,0.984,2.18,2.188c-0.095,1.266-1.153,1.812-2.393,1.812h-45.5L128,254h80
