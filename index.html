@@ -32,9 +32,11 @@
             flex-direction: column;
             background: #0d0d11;
             overflow-x: hidden;
+            /* 底部安全区处理，让底部导航真正贴底 */
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
 
-        /* 顶部栏 */
+        /* 顶部栏 - 新布局：左侧标题+月份箭头，右侧保存按钮 */
         .nav-header {
             background: rgba(18, 18, 26, 0.85);
             backdrop-filter: blur(20px);
@@ -45,6 +47,11 @@
             justify-content: space-between;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             flex-shrink: 0;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;  /* 标题与月份箭头之间间距加大，让月份箭头稍微左移 */
         }
         .header-title {
             display: flex;
@@ -63,7 +70,7 @@
         .month-control {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
         .month-arrow {
             width: 32px;
@@ -78,6 +85,18 @@
             transition: 0.2s;
         }
         .month-arrow:active { background: rgba(255,255,255,0.15); }
+        .save-salary-btn {
+            background: #F0B90B;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #121212;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .save-salary-btn:active { opacity: 0.7; transform: scale(0.96); }
 
         /* 滚动区域 */
         .main-scroll {
@@ -244,12 +263,12 @@
         .edit-trigger svg { width: 20px; height: 20px; stroke: #aaa; stroke-width: 1.8; transition: stroke 0.1s; }
         .edit-trigger.done svg { stroke: #F0B90B; }
 
-        /* 底部导航 - 固定在底部，加安全区 */
+        /* 底部导航 - 由父容器padding-bottom保证贴底 */
         .bottom-nav {
             background: #0f0f13;
             border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+            padding: 8px 0 12px;
             flex-shrink: 0;
         }
         .nav-item {
@@ -261,8 +280,7 @@
         .nav-item svg [fill] { fill: currentColor; }
         .nav-label { font-size: 11px; font-weight: 600; }
 
-        /* ========= 薪资页面专用样式（重新调整间距，使其协调） ========= */
-        /* 八宫格包裹容器 */
+        /* ========= 薪资页面专用样式 ========= */
         .params-wrapper {
             background: transparent;
             border-radius: 0;
@@ -299,10 +317,11 @@
         }
         .param-value:read-only { opacity: 0.8; }
 
-        /* 加班费三卡片 */
+        /* 加班费三卡片 - 下移一倍距离 */
         .overtime-row {
             display: flex;
             gap: 10px;
+            margin-top: 24px;   /* 下移一倍距离 */
             margin-bottom: 16px;
         }
         .overtime-card {
@@ -369,17 +388,6 @@
             cursor: pointer;
             color: #e8eaef;
         }
-        .btn-primary {
-            background: #F0B90B;
-            border: none;
-            border-radius: 40px;
-            padding: 10px 0;
-            font-weight: 700;
-            color: #121212;
-            cursor: pointer;
-            width: 100%;
-        }
-
         /* 弹层 */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100;
@@ -438,25 +446,28 @@
 <body>
 <div class="app">
     <div class="nav-header">
-        <div class="header-title">
-            <svg fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 256">
-                <path d="M174.55,144.5L174.55,144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.708-9.292-21-21-21H25C12.57,2,2,12.57,2,25v183
-                    c0,11.9,10.95,22,22.75,22l114.213,0c1.207,0,2.27,0.984,2.18,2.188c-0.095,1.266-1.153,1.812-2.393,1.812h-45.5L128,254h80
-                    L174.55,144.5z M82.05,220.2c-3.199,0-5.599-2.399-5.6-5.598c-0.001-3.045,2.557-5.602,5.602-5.602
-                    c3.199,0.001,5.598,2.401,5.598,5.6C87.55,217.8,85.25,220.2,82.05,220.2z M144,138h-19.65c-5.3,0-9.8,4.7-9.8,10l0,0
-                    c0,5.3,4.5,10,9.8,10h19.8v42H18V31h126V138z M80.636,134.85c23.663,0,43-19.21,43-43s-19.21-43-43-43S37.763,68.188,37.763,91.977
-                    C37.763,115.64,56.973,134.85,80.636,134.85z M78.261,95.497c-7.888-2.756-12.807-6.743-12.807-13.824
-                    c0-6.531,4.325-11.662,12.255-13.273v-7.082h5.937v6.743c4.919,0,8.481,1.018,11.11,2.417l-2.417,8.481
-                    c-1.951-0.806-5.131-2.163-9.499-2.163s-6.743,2.163-6.743,4.325c0,2.968,2.756,4.113,8.693,6.531
-                    c8.1,2.968,11.874,7.082,11.874,13.824c0,6.743-4.113,11.874-12.807,13.824v6.743h-5.937v-6.531c-5.131,0-10.305-1.357-12.807-2.756
-                    l2.163-8.693c2.756,1.357,7.082,2.968,11.662,2.968c4.919,0,7.336-2.163,7.336-5.131S83.944,97.702,78.261,95.497z"/>
-            </svg>
-            考勤·薪资预算
+        <div class="header-left">
+            <div class="header-title">
+                <svg fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 256">
+                    <path d="M174.55,144.5L174.55,144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.708-9.292-21-21-21H25C12.57,2,2,12.57,2,25v183
+                        c0,11.9,10.95,22,22.75,22l114.213,0c1.207,0,2.27,0.984,2.18,2.188c-0.095,1.266-1.153,1.812-2.393,1.812h-45.5L128,254h80
+                        L174.55,144.5z M82.05,220.2c-3.199,0-5.599-2.399-5.6-5.598c-0.001-3.045,2.557-5.602,5.602-5.602
+                        c3.199,0.001,5.598,2.401,5.598,5.6C87.55,217.8,85.25,220.2,82.05,220.2z M144,138h-19.65c-5.3,0-9.8,4.7-9.8,10l0,0
+                        c0,5.3,4.5,10,9.8,10h19.8v42H18V31h126V138z M80.636,134.85c23.663,0,43-19.21,43-43s-19.21-43-43-43S37.763,68.188,37.763,91.977
+                        C37.763,115.64,56.973,134.85,80.636,134.85z M78.261,95.497c-7.888-2.756-12.807-6.743-12.807-13.824
+                        c0-6.531,4.325-11.662,12.255-13.273v-7.082h5.937v6.743c4.919,0,8.481,1.018,11.11,2.417l-2.417,8.481
+                        c-1.951-0.806-5.131-2.163-9.499-2.163s-6.743,2.163-6.743,4.325c0,2.968,2.756,4.113,8.693,6.531
+                        c8.1,2.968,11.874,7.082,11.874,13.824c0,6.743-4.113,11.874-12.807,13.824v6.743h-5.937v-6.531c-5.131,0-10.305-1.357-12.807-2.756
+                        l2.163-8.693c2.756,1.357,7.082,2.968,11.662,2.968c4.919,0,7.336-2.163,7.336-5.131S83.944,97.702,78.261,95.497z"/>
+                </svg>
+                考勤·薪资预算
+            </div>
+            <div class="month-control">
+                <div class="month-arrow" id="prevMonthBtn">◀</div>
+                <div class="month-arrow" id="nextMonthBtn">▶</div>
+            </div>
         </div>
-        <div class="month-control">
-            <div class="month-arrow" id="prevMonthBtn">◀</div>
-            <div class="month-arrow" id="nextMonthBtn">▶</div>
-        </div>
+        <button class="save-salary-btn" id="globalSaveSalaryBtn">💾 保存当月薪资单</button>
     </div>
 
     <div class="main-scroll" id="mainScroll">
@@ -526,7 +537,8 @@
         tabSalary: document.getElementById('tabSalary'),
         toastMsg: document.getElementById('toastMsg'),
         shiftModal: document.getElementById('shiftModal'),
-        bottomNav: document.getElementById('bottomNav')
+        bottomNav: document.getElementById('bottomNav'),
+        globalSaveBtn: document.getElementById('globalSaveSalaryBtn')
     };
 
     function showToast(msg) { dom.toastMsg.textContent = msg; dom.toastMsg.classList.add('show'); setTimeout(() => dom.toastMsg.classList.remove('show'), 1800); }
@@ -615,7 +627,7 @@
         return { gross, net, overtimePay, mealAllowance, nightAllowance, nightCount, overtimeRes };
     }
 
-    // 排班页面（保留原样式，不动间距）
+    // 排班页面
     function renderSchedule() {
         const days = getDays(year, month);
         const first = getFirstDay(year, month);
@@ -707,7 +719,7 @@
         if(activeTab === 'salary') renderSalaryPage();
     }
 
-    // 薪资页面（优化间距，布局协调）
+    // 薪资页面渲染
     function renderSalaryPage() {
         const salary = computeSalary();
         const overtimeRes = computeOvertimeAndSalary();
@@ -750,10 +762,10 @@
                 <div class="result-line"><span class="result-label">应发工资</span><span class="result-value" style="font-size:18px; font-weight:800;">${salary.gross.toFixed(2)} 元</span></div>
                 <div class="result-line"><span class="result-label">实发工资</span><span class="result-value" style="font-size:18px; color:#F0B90B; font-weight:800;">${salary.net.toFixed(2)} 元</span></div>
             </div>
-            <button id="saveSalaryBtn" class="btn-primary">💾 保存当月薪资单</button>
         `;
         dom.tabSalary.innerHTML = paramHtml + overtimeRowHtml + resultHtml;
 
+        // 绑定参数修改事件
         document.getElementById('baseSalaryParam').addEventListener('change', (e) => { salaryConfig.baseSalary = parseFloat(e.target.value) || 0; saveSalaryConfig(); renderSalaryPage(); });
         document.getElementById('performanceParam').addEventListener('change', (e) => { salaryConfig.performance = parseFloat(e.target.value) || 0; saveSalaryConfig(); renderSalaryPage(); });
         document.getElementById('otherDeductionParam').addEventListener('change', (e) => { salaryConfig.otherDeduction = parseFloat(e.target.value) || 0; saveSalaryConfig(); renderSalaryPage(); });
@@ -764,14 +776,25 @@
         if(manualInput) manualInput.addEventListener('change', (e) => { let val = e.target.value.trim(); if(val === '') salaryConfig.manualOvertimePay = null; else salaryConfig.manualOvertimePay = parseFloat(val); saveSalaryConfig(); renderSalaryPage(); });
         const resetBtn = document.getElementById('resetOvertimeBtn');
         if(resetBtn) resetBtn.addEventListener('click', () => { salaryConfig.manualOvertimePay = null; saveSalaryConfig(); renderSalaryPage(); });
-        const saveBtn = document.getElementById('saveSalaryBtn');
-        if(saveBtn) saveBtn.addEventListener('click', () => {
-            const currentSalary = computeSalary();
-            const key = year + '_' + month;
-            salaryHistory[key] = { year, month, config: JSON.parse(JSON.stringify(salaryConfig)), fullWorkHours, overtimeRes: computeOvertimeAndSalary(), nightCount: getNightShiftCount(), gross: currentSalary.gross, net: currentSalary.net, overtimePay: currentSalary.overtimePay, timestamp: Date.now() };
-            localStorage.setItem('salary_history_v1', JSON.stringify(salaryHistory));
-            showToast(`已保存 ${year}年${month}月 薪资单`);
-        });
+    }
+
+    // 全局保存薪资单函数
+    function saveCurrentSalary() {
+        const currentSalary = computeSalary();
+        const key = year + '_' + month;
+        salaryHistory[key] = { 
+            year, month, 
+            config: JSON.parse(JSON.stringify(salaryConfig)), 
+            fullWorkHours, 
+            overtimeRes: computeOvertimeAndSalary(), 
+            nightCount: getNightShiftCount(), 
+            gross: currentSalary.gross, 
+            net: currentSalary.net, 
+            overtimePay: currentSalary.overtimePay, 
+            timestamp: Date.now() 
+        };
+        localStorage.setItem('salary_history_v1', JSON.stringify(salaryHistory));
+        showToast(`已保存 ${year}年${month}月 薪资单`);
     }
 
     function renderAll() {
@@ -821,11 +844,13 @@
         closeShiftPicker();
     }
 
+    // 事件绑定
     document.querySelectorAll('.shift-option').forEach(btn => btn.addEventListener('click', () => applyShift(btn.dataset.shift)));
     document.getElementById('cancelShift').addEventListener('click', closeShiftPicker);
     document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchTab(item.dataset.tab)));
     document.getElementById('prevMonthBtn').addEventListener('click', () => changeMonth(-1));
     document.getElementById('nextMonthBtn').addEventListener('click', () => changeMonth(1));
+    dom.globalSaveBtn.addEventListener('click', saveCurrentSalary);
     window.addEventListener('click', (e) => { if(e.target.classList.contains('modal-overlay')) dom.shiftModal.classList.remove('show'); });
 
     const now = new Date();
