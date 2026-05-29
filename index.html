@@ -61,7 +61,6 @@
             background: var(--bg-primary);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-primary);
-            -webkit-font-smoothing: antialiased;
         }
 
         .app {
@@ -173,7 +172,7 @@
             scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
-            -webkit-overflow-scrolling: touch;
+            padding-bottom: calc(16px + var(--safe-bottom));
         }
         .main-scroll::-webkit-scrollbar {
             width: 3px;
@@ -515,15 +514,27 @@
             stroke: var(--accent);
         }
 
-        /* ========== 底部导航 ========== */
+        /* ========== 底部导航（图标紧贴屏幕底边） ========== */
         .bottom-nav {
             background: #0b0b10;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             display: flex;
-            padding: 8px 0 calc(10px + var(--safe-bottom));
+            padding: 8px 0 0;
             flex-shrink: 0;
             z-index: 10;
             position: relative;
+            overflow: visible;
+        }
+        /* 背景安全区延伸层：只增加背景，不挤压图标 */
+        .bottom-nav::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: var(--safe-bottom);
+            background: #0b0b10;
+            pointer-events: none;
         }
         .nav-item {
             flex: 1;
@@ -536,6 +547,8 @@
             transition: color 0.2s;
             padding: 3px 0;
             -webkit-tap-highlight-color: transparent;
+            min-height: 44px;
+            justify-content: center;
         }
         .nav-item.active {
             color: var(--accent);
@@ -945,7 +958,7 @@
 </head>
 <body>
     <div class="app">
-        <!-- 顶部导航（已移除月份显示） -->
+        <!-- 顶部导航（无月份文字） -->
         <div class="nav-header">
             <div class="header-left">
                 <div class="header-title">
@@ -978,7 +991,7 @@
             <div class="tab-pane" id="tabSalary"></div>
         </div>
 
-        <!-- 底部导航（安全区适配） -->
+        <!-- 底部导航（图标紧贴屏幕底边） -->
         <nav class="bottom-nav" id="bottomNav">
             <div class="nav-item active" data-tab="schedule" role="button" aria-label="排班">
                 <svg viewBox="0 0 24 24" fill="none">
