@@ -32,10 +32,9 @@
             flex-direction: column;
             background: #0d0d11;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* 顶部栏安全区 */
+        /* 顶部栏 */
         .nav-header {
             background: rgba(18, 18, 26, 0.85);
             backdrop-filter: blur(20px);
@@ -80,7 +79,7 @@
         }
         .month-arrow:active { background: rgba(255,255,255,0.15); }
 
-        /* 滚动区域自动撑满剩余空间 */
+        /* 滚动区域 */
         .main-scroll {
             flex: 1;
             overflow-y: auto;
@@ -137,7 +136,7 @@
             background: #1f1f26;
         }
 
-        /* 四宫格样式 */
+        /* 排班页面四宫格（保留用户修改的77px） */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -161,7 +160,7 @@
             font-weight: 800;
             color: white;
         }
-        /* 排班日历外层透明卡片（仅分组，不改变视觉） */
+        /* 排班日历外层透明卡片 */
         .schedule-card {
             background: transparent;
             border-radius: 0;
@@ -245,7 +244,7 @@
         .edit-trigger svg { width: 20px; height: 20px; stroke: #aaa; stroke-width: 1.8; transition: stroke 0.1s; }
         .edit-trigger.done svg { stroke: #F0B90B; }
 
-        /* 底部导航 - 固定在底部，加安全区padding-bottom */
+        /* 底部导航 - 固定在底部，加安全区 */
         .bottom-nav {
             background: #0f0f13;
             border-top: 1px solid rgba(255,255,255,0.05);
@@ -262,55 +261,97 @@
         .nav-item svg [fill] { fill: currentColor; }
         .nav-label { font-size: 11px; font-weight: 600; }
 
-        /* 薪资八宫格包裹卡片 */
+        /* ========= 薪资页面专用样式（重新调整间距，使其协调） ========= */
+        /* 八宫格包裹容器 */
         .params-wrapper {
             background: transparent;
             border-radius: 0;
             padding: 0;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .params-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
         .param-card {
             background: #141418;
-            border-radius: 20px;
-            padding: 10px 4px;
+            border-radius: 16px;
+            padding: 8px 4px;
             text-align: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.13);
         }
         .param-label {
-            font-size: 10px;
+            font-size: 9px;
             color: #8b8f9a;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .param-value {
             background: #2a2a30;
             border: 1px solid #3a3a44;
-            border-radius: 20px;
-            padding: 6px 4px;
+            border-radius: 16px;
+            padding: 4px 2px;
             width: 100%;
             text-align: center;
             color: white;
-            font-size: 13px;
+            font-size: 12px;
             font-family: inherit;
         }
         .param-value:read-only { opacity: 0.8; }
 
+        /* 加班费三卡片 */
+        .overtime-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .overtime-card {
+            flex: 1;
+            background: #141418;
+            border-radius: 20px;
+            padding: 12px 4px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.13);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 80px;
+        }
+        .overtime-title {
+            font-size: 11px;
+            color: #8b8f9a;
+            margin-bottom: 6px;
+        }
+        .overtime-amount {
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+        }
+        .overtime-input {
+            background: #2a2a30;
+            border: 1px solid #3a3a44;
+            border-radius: 30px;
+            padding: 6px 4px;
+            width: 90%;
+            margin: 0 auto 6px;
+            text-align: center;
+            color: white;
+            font-size: 13px;
+        }
+
+        /* 结果卡片 */
         .salary-result {
             background: #141418;
-            border-radius: 24px;
-            padding: 16px;
+            border-radius: 20px;
+            padding: 14px;
             margin: 12px 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.13);
         }
         .result-line {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 15px;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
         .result-label {
             color: #8b8f9a;
@@ -318,65 +359,25 @@
         .result-value {
             font-weight: 700;
         }
+
         .btn-small {
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 40px;
-            padding: 6px 14px;
-            font-size: 12px;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 11px;
             cursor: pointer;
             color: #e8eaef;
         }
-        .btn-small:active { background: rgba(255,255,255,0.2); }
         .btn-primary {
             background: #F0B90B;
             border: none;
             border-radius: 40px;
-            padding: 8px 16px;
+            padding: 10px 0;
             font-weight: 700;
             color: #121212;
             cursor: pointer;
-        }
-
-        /* 加班费三卡片 */
-        .overtime-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .overtime-card {
-            flex: 1;
-            background: #141418;
-            border-radius: 24px;
-            padding: 12px 6px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.13);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 90px;
-        }
-        .overtime-title {
-            font-size: 11px;
-            color: #8b8f9a;
-            margin-bottom: 8px;
-        }
-        .overtime-amount {
-            font-size: 18px;
-            font-weight: 800;
-            color: white;
-        }
-        .overtime-input {
-            background: #2a2a30;
-            border: 1px solid #3a3a44;
-            border-radius: 20px;
-            padding: 6px 8px;
             width: 100%;
-            text-align: center;
-            color: white;
-            font-size: 14px;
-            font-family: inherit;
-            margin-bottom: 6px;
         }
 
         /* 弹层 */
@@ -497,14 +498,14 @@
 <script>
 (function(){
     // 存储键
-    const STORAGE_PREFIX = 'workhours_v19_';
+    const STORAGE_PREFIX = 'workhours_v20_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
     let year, month, data = [], activeTab = 'schedule';
     let editingRow = null;
     let pendingRow = null;
 
     // 薪资配置
-    const SALARY_STORAGE = 'salary_config_v9';
+    const SALARY_STORAGE = 'salary_config_v10';
     let salaryConfig = {
         baseSalary: 0,
         performance: 0,
@@ -614,6 +615,7 @@
         return { gross, net, overtimePay, mealAllowance, nightAllowance, nightCount, overtimeRes };
     }
 
+    // 排班页面（保留原样式，不动间距）
     function renderSchedule() {
         const days = getDays(year, month);
         const first = getFirstDay(year, month);
@@ -705,6 +707,7 @@
         if(activeTab === 'salary') renderSalaryPage();
     }
 
+    // 薪资页面（优化间距，布局协调）
     function renderSalaryPage() {
         const salary = computeSalary();
         const overtimeRes = computeOvertimeAndSalary();
@@ -747,7 +750,7 @@
                 <div class="result-line"><span class="result-label">应发工资</span><span class="result-value" style="font-size:18px; font-weight:800;">${salary.gross.toFixed(2)} 元</span></div>
                 <div class="result-line"><span class="result-label">实发工资</span><span class="result-value" style="font-size:18px; color:#F0B90B; font-weight:800;">${salary.net.toFixed(2)} 元</span></div>
             </div>
-            <button id="saveSalaryBtn" class="btn-primary" style="width:100%;">💾 保存当月薪资单</button>
+            <button id="saveSalaryBtn" class="btn-primary">💾 保存当月薪资单</button>
         `;
         dom.tabSalary.innerHTML = paramHtml + overtimeRowHtml + resultHtml;
 
