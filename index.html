@@ -32,16 +32,15 @@
             flex-direction: column;
             background: #0d0d11;
             overflow-x: hidden;
-            /* 安全区域适配 */
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            /* 不再全局加安全区，避免底部导航偏移 */
         }
 
-        /* 顶部栏 */
+        /* 顶部栏单独处理安全区 */
         .nav-header {
             background: rgba(18, 18, 26, 0.85);
             backdrop-filter: blur(20px);
             padding: 12px 16px;
+            padding-top: calc(12px + env(safe-area-inset-top, 0px));
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -161,14 +160,14 @@
             font-weight: 800;
             color: white;
         }
-        /* 排班日历外层透明卡片（仅分组，不改变视觉） */
+        /* 排班日历外层透明卡片 */
         .schedule-card {
             background: transparent;
             border-radius: 0;
             padding: 0;
             margin-top: 77px;
         }
-        /* 日历样式保持原样 */
+        /* 日历样式 */
         .calendar-week {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -245,12 +244,12 @@
         .edit-trigger svg { width: 20px; height: 20px; stroke: #aaa; stroke-width: 1.8; transition: stroke 0.1s; }
         .edit-trigger.done svg { stroke: #F0B90B; }
 
-        /* 底部导航 */
+        /* 底部导航独立固定，加安全区 padding-bottom */
         .bottom-nav {
             background: #0f0f13;
             border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            padding: 8px 0 12px;
+            padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 0px));
             flex-shrink: 0;
         }
         .nav-item {
@@ -262,7 +261,7 @@
         .nav-item svg [fill] { fill: currentColor; }
         .nav-label { font-size: 11px; font-weight: 600; }
 
-        /* 薪资八宫格包裹卡片 */
+        /* 薪资八宫格 */
         .params-wrapper {
             background: transparent;
             border-radius: 0;
@@ -438,7 +437,7 @@
 <div class="app">
     <div class="nav-header">
         <div class="header-title">
-            <svg fill="currentColor" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 210 256" enable-background="new 0 0 210 256" xml:space="preserve">
+            <svg fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 256">
                 <path d="M174.55,144.5L174.55,144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.708-9.292-21-21-21H25C12.57,2,2,12.57,2,25v183
                     c0,11.9,10.95,22,22.75,22l114.213,0c1.207,0,2.27,0.984,2.18,2.188c-0.095,1.266-1.153,1.812-2.393,1.812h-45.5L128,254h80
                     L174.55,144.5z M82.05,220.2c-3.199,0-5.599-2.399-5.6-5.598c-0.001-3.045,2.557-5.602,5.602-5.602
@@ -553,7 +552,7 @@
     }
     function saveFullHours() { localStorage.setItem(FULL_HOURS_KEY, fullWorkHours.toString()); }
 
-    // 工时统计：总工时、加班工时（除法假外所有加班字段之和）、法定假日工时
+    // 工时统计
     function computeWorkStats() {
         let totalHours = 0;
         let overtimeHours = 0;
@@ -614,7 +613,6 @@
         return { gross, net, overtimePay, mealAllowance, nightAllowance, nightCount, overtimeRes };
     }
 
-    // 排班页面
     function renderSchedule() {
         const days = getDays(year, month);
         const first = getFirstDay(year, month);
@@ -647,7 +645,6 @@
         if(fullInput) fullInput.addEventListener('change', (e) => { let val = parseFloat(e.target.value); if(isNaN(val)) val = 160; fullWorkHours = val; saveFullHours(); if(activeTab === 'salary') renderSalaryPage(); renderSchedule(); });
     }
 
-    // 编辑图标
     const pencilIcon = `<svg viewBox="0 0 24 24" fill="none"><path d="M20.8506 12.0002V6.50992C20.8506 4.48846 19.2118 2.84973 17.1904 2.84973H6.5098C4.48833 2.84973 2.84961 4.48845 2.84961 6.50992V17.4905C2.84961 19.512 4.48833 21.1507 6.5098 21.1507H11.8501" stroke="currentColor" stroke-width="1.7"/><path d="M7.00269 12H10.0018" stroke="currentColor" stroke-width="1.7"/><path d="M7.00269 8.0022H12.9993" stroke="currentColor" stroke-width="1.7"/><path d="M20.79 15.8827L18.8369 13.8971C18.6389 13.6957 18.3177 13.6957 18.1196 13.8971L14.3632 17.716C14.2545 17.8266 14.201 17.9813 14.2177 18.1368L14.4325 20.1323C14.4455 20.2525 14.5388 20.3474 14.657 20.3605L16.6198 20.5789C16.7727 20.5959 16.9249 20.5415 17.0337 20.431L20.79 16.612C20.9881 16.4106 20.9881 16.0841 20.79 15.8827Z" stroke="currentColor" stroke-width="1.7"/></svg>`;
     const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
 
