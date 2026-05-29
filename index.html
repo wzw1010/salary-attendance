@@ -32,11 +32,10 @@
             flex-direction: column;
             background: #0d0d11;
             overflow-x: hidden;
-            /* 底部安全区处理，让底部导航真正贴底 */
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            /* 重要：移除 padding-bottom，避免底部导航被推高 */
         }
 
-        /* 顶部栏 - 新布局：左侧标题+月份箭头，右侧保存按钮 */
+        /* 顶部栏 */
         .nav-header {
             background: rgba(18, 18, 26, 0.85);
             backdrop-filter: blur(20px);
@@ -51,7 +50,7 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 16px;  /* 标题与月份箭头之间间距加大，让月份箭头稍微左移 */
+            gap: 16px;
         }
         .header-title {
             display: flex;
@@ -155,7 +154,7 @@
             background: #1f1f26;
         }
 
-        /* 排班页面四宫格（保留用户修改的77px） */
+        /* 排班页面四宫格 */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -179,14 +178,12 @@
             font-weight: 800;
             color: white;
         }
-        /* 排班日历外层透明卡片 */
         .schedule-card {
             background: transparent;
             border-radius: 0;
             padding: 0;
             margin-top: 77px;
         }
-        /* 日历样式 */
         .calendar-week {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -263,12 +260,12 @@
         .edit-trigger svg { width: 20px; height: 20px; stroke: #aaa; stroke-width: 1.8; transition: stroke 0.1s; }
         .edit-trigger.done svg { stroke: #F0B90B; }
 
-        /* 底部导航 - 由父容器padding-bottom保证贴底 */
+        /* 底部导航 - 安全区内边距加在这里 */
         .bottom-nav {
             background: #0f0f13;
             border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            padding: 8px 0 12px;
+            padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 0px));
             flex-shrink: 0;
         }
         .nav-item {
@@ -280,7 +277,7 @@
         .nav-item svg [fill] { fill: currentColor; }
         .nav-label { font-size: 11px; font-weight: 600; }
 
-        /* ========= 薪资页面专用样式 ========= */
+        /* 薪资页面样式 */
         .params-wrapper {
             background: transparent;
             border-radius: 0;
@@ -317,11 +314,10 @@
         }
         .param-value:read-only { opacity: 0.8; }
 
-        /* 加班费三卡片 - 下移一倍距离 */
         .overtime-row {
             display: flex;
             gap: 10px;
-            margin-top: 24px;   /* 下移一倍距离 */
+            margin-top: 24px;
             margin-bottom: 16px;
         }
         .overtime-card {
@@ -358,7 +354,6 @@
             font-size: 13px;
         }
 
-        /* 结果卡片 */
         .salary-result {
             background: #141418;
             border-radius: 20px;
@@ -378,7 +373,6 @@
         .result-value {
             font-weight: 700;
         }
-
         .btn-small {
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.2);
@@ -388,6 +382,7 @@
             cursor: pointer;
             color: #e8eaef;
         }
+
         /* 弹层 */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100;
@@ -467,7 +462,7 @@
                 <div class="month-arrow" id="nextMonthBtn">▶</div>
             </div>
         </div>
-        <button class="save-salary-btn" id="globalSaveSalaryBtn">💾 保存当月薪资单</button>
+        <button class="save-salary-btn" id="globalSaveSalaryBtn">💾 保存</button>
     </div>
 
     <div class="main-scroll" id="mainScroll">
@@ -508,14 +503,12 @@
 
 <script>
 (function(){
-    // 存储键
     const STORAGE_PREFIX = 'workhours_v20_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
     let year, month, data = [], activeTab = 'schedule';
     let editingRow = null;
     let pendingRow = null;
 
-    // 薪资配置
     const SALARY_STORAGE = 'salary_config_v10';
     let salaryConfig = {
         baseSalary: 0,
@@ -566,22 +559,15 @@
     }
     function saveFullHours() { localStorage.setItem(FULL_HOURS_KEY, fullWorkHours.toString()); }
 
-    // 工时统计
     function computeWorkStats() {
-        let totalHours = 0;
-        let overtimeHours = 0;
-        let holidayOvertime = 0;
+        let totalHours = 0, overtimeHours = 0, holidayOvertime = 0;
         for(let i=0;i<data.length;i++) {
             const day = data[i];
             if(day.shift === 'rest') continue;
-            const normal = day.normal||0;
-            const overtime = day.overtime||0;
+            const normal = day.normal||0, overtime = day.overtime||0;
             totalHours += normal + overtime;
-            if(day.shift === 'holiday') {
-                holidayOvertime += overtime;
-            } else {
-                overtimeHours += overtime;
-            }
+            if(day.shift === 'holiday') holidayOvertime += overtime;
+            else overtimeHours += overtime;
         }
         return { totalHours, overtimeHours, holidayOvertime };
     }
@@ -593,15 +579,11 @@
     }
 
     function computeOvertimeAndSalary() {
-        let nonHolidayTotal = 0;
-        let holidayOvertimeHours = 0;
+        let nonHolidayTotal = 0, holidayOvertimeHours = 0;
         for(let i=0;i<data.length;i++) {
             const day = data[i];
             if(day.shift === 'rest') continue;
-            if(day.shift === 'holiday') {
-                holidayOvertimeHours += (day.overtime||0);
-                continue;
-            }
+            if(day.shift === 'holiday') { holidayOvertimeHours += (day.overtime||0); continue; }
             nonHolidayTotal += (day.normal||0) + (day.overtime||0);
         }
         const overtimeHours = Math.max(0, nonHolidayTotal - fullWorkHours);
@@ -627,7 +609,6 @@
         return { gross, net, overtimePay, mealAllowance, nightAllowance, nightCount, overtimeRes };
     }
 
-    // 排班页面
     function renderSchedule() {
         const days = getDays(year, month);
         const first = getFirstDay(year, month);
@@ -719,7 +700,6 @@
         if(activeTab === 'salary') renderSalaryPage();
     }
 
-    // 薪资页面渲染
     function renderSalaryPage() {
         const salary = computeSalary();
         const overtimeRes = computeOvertimeAndSalary();
@@ -765,7 +745,6 @@
         `;
         dom.tabSalary.innerHTML = paramHtml + overtimeRowHtml + resultHtml;
 
-        // 绑定参数修改事件
         document.getElementById('baseSalaryParam').addEventListener('change', (e) => { salaryConfig.baseSalary = parseFloat(e.target.value) || 0; saveSalaryConfig(); renderSalaryPage(); });
         document.getElementById('performanceParam').addEventListener('change', (e) => { salaryConfig.performance = parseFloat(e.target.value) || 0; saveSalaryConfig(); renderSalaryPage(); });
         document.getElementById('otherDeductionParam').addEventListener('change', (e) => { salaryConfig.otherDeduction = parseFloat(e.target.value) || 0; saveSalaryConfig(); renderSalaryPage(); });
@@ -778,21 +757,10 @@
         if(resetBtn) resetBtn.addEventListener('click', () => { salaryConfig.manualOvertimePay = null; saveSalaryConfig(); renderSalaryPage(); });
     }
 
-    // 全局保存薪资单函数
     function saveCurrentSalary() {
         const currentSalary = computeSalary();
         const key = year + '_' + month;
-        salaryHistory[key] = { 
-            year, month, 
-            config: JSON.parse(JSON.stringify(salaryConfig)), 
-            fullWorkHours, 
-            overtimeRes: computeOvertimeAndSalary(), 
-            nightCount: getNightShiftCount(), 
-            gross: currentSalary.gross, 
-            net: currentSalary.net, 
-            overtimePay: currentSalary.overtimePay, 
-            timestamp: Date.now() 
-        };
+        salaryHistory[key] = { year, month, config: JSON.parse(JSON.stringify(salaryConfig)), fullWorkHours, overtimeRes: computeOvertimeAndSalary(), nightCount: getNightShiftCount(), gross: currentSalary.gross, net: currentSalary.net, overtimePay: currentSalary.overtimePay, timestamp: Date.now() };
         localStorage.setItem('salary_history_v1', JSON.stringify(salaryHistory));
         showToast(`已保存 ${year}年${month}月 薪资单`);
     }
@@ -844,7 +812,6 @@
         closeShiftPicker();
     }
 
-    // 事件绑定
     document.querySelectorAll('.shift-option').forEach(btn => btn.addEventListener('click', () => applyShift(btn.dataset.shift)));
     document.getElementById('cancelShift').addEventListener('click', closeShiftPicker);
     document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchTab(item.dataset.tab)));
