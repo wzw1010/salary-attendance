@@ -37,7 +37,7 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100dvh;
-            padding-top: var(--safe-top);              /* 状态栏安全区 */
+            padding-top: var(--safe-top);
             padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -47,29 +47,60 @@
             margin: 0 auto;
         }
 
-        /* ===== 顶部导航，完全参照基金页面 ===== */
+        /* 顶部导航 (sticky, 参照基金页面) */
         .nav-header {
             position: sticky;
-            top: 0;                                   /* 吸附在 body 顶部，因为 body 已有 padding-top 避开状态栏 */
+            top: 0;
             z-index: 10;
             background: rgba(18, 18, 26, 0.92);
             backdrop-filter: blur(28px);
             -webkit-backdrop-filter: blur(28px);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px 8px;                   /* 上下内边距 */
-            margin-left: -14px;                       /* 突破内容区的 padding */
+            padding: 12px 16px 8px;
+            margin-left: -14px;
             margin-right: -14px;
             border-bottom: 1px solid var(--border-subtle);
             min-height: 50px;
+            gap: 12px;
         }
-        .header-left { display:flex; align-items:center; gap:10px; flex:1; }
-        .header-title { display:flex; align-items:center; gap:8px; font-weight:800; font-size:18px; color:var(--accent); white-space:nowrap; }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--accent);
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-right: auto;
+        }
         .header-title svg { width:22px; height:22px; fill:currentColor; }
-        .month-control { display:flex; align-items:center; gap:4px; margin-left:auto; }
-        .month-arrow { width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06); border-radius:50%; cursor:pointer; font-size:13px; color:#bbb; border:none; }
-        .save-salary-btn { background:var(--accent); border:none; border-radius:22px; padding:7px 13px; font-weight:700; font-size:12px; color:var(--accent-text); cursor:pointer; }
+        .month-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .month-arrow {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 13px; color: #bbb; border: none;
+        }
+        .save-salary-btn {
+            background: var(--accent);
+            border: none;
+            border-radius: 22px;
+            padding: 7px 13px;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--accent-text);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
 
         .content { padding: 0 14px; }
         .tab-pane { display:none; animation:fadeIn 0.22s; }
@@ -144,20 +175,69 @@
         .result-line { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:17px; font-weight:800; }
         .result-label { color:#8b8f9a; } .result-value { font-weight:800; }
 
-        /* 弹窗 (2x2 居中) */
+        /* ===== 液态毛玻璃弹窗 ===== */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100;
+            position: fixed; inset: 0; z-index: 100;
             display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: 0.2s;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
         }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .modal-card { background: #1e1e24; border-radius: 24px; width: 85%; max-width: 360px; padding: 20px; text-align: center; box-shadow: 0 12px 40px rgba(0,0,0,0.6); }
-        .option-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .shift-option { padding: 14px 0; border-radius: 20px; font-weight: 700; font-size: 15px; border: none; cursor: pointer; background: rgba(255,255,255,0.08); color: #ccc; transition: 0.15s; }
-        .shift-option.work { background: rgba(76,154,255,0.25); color: #4C9AFF; }
-        .shift-option.night { background: rgba(139,124,247,0.25); color: #8B7CF7; }
-        .shift-option.rest { background: rgba(139,149,165,0.25); color: #8B95A5; }
-        .shift-option.holiday { background: rgba(245,158,11,0.25); color: #F59E0B; }
+        .option-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            width: 85%;
+            max-width: 360px;
+        }
+        .shift-option {
+            position: relative;
+            border-radius: 22px;
+            padding: 20px 10px 18px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.12);
+            font-family: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s cubic-bezier(0.25,0.8,0.25,1.2);
+            overflow: hidden;
+            background: rgba(30,30,40,0.55);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.06) inset;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            color: #ccc;
+        }
+        .shift-option::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: 22px;
+            background: radial-gradient(ellipse at 30% 10%, rgba(255,200,120,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(160,140,255,0.1) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
+        }
+        .shift-option > * { position: relative; z-index: 1; }
+        .shift-option:active { transform: scale(0.94) !important; transition: transform 0.1s ease; background: rgba(50,50,65,0.7); }
+        .modal-overlay.show .shift-option { opacity: 1; transform: translateY(0) scale(1); }
+        .modal-overlay.show .shift-option:nth-child(1) { transition-delay: 0.06s; }
+        .modal-overlay.show .shift-option:nth-child(2) { transition-delay: 0.12s; }
+        .modal-overlay.show .shift-option:nth-child(3) { transition-delay: 0.18s; }
+        .modal-overlay.show .shift-option:nth-child(4) { transition-delay: 0.24s; }
+        .shift-icon { font-size:30px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4)); transition:transform 0.3s; }
+        .shift-option:active .shift-icon { transform:scale(1.2); }
+        .shift-label { font-size:15px; font-weight:700; letter-spacing:0.8px; }
+        .shift-sub { font-size:10px; font-weight:500; opacity:0.65; letter-spacing:0.3px; }
+        .shift-option.work { color:#7aa9ff; border-color:rgba(122,169,255,0.35); background:rgba(42,58,92,0.65); }
+        .shift-option.night { color:#b794f4; border-color:rgba(183,148,244,0.35); background:rgba(61,43,94,0.65); }
+        .shift-option.rest { color:#9ca3af; border-color:rgba(156,163,175,0.3); background:rgba(42,58,63,0.6); }
+        .shift-option.holiday {
+            color:#fbbf24; border-color:rgba(251,191,36,0.4); background:rgba(94,58,42,0.65);
+            box-shadow:0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.08) inset, 0 0 40px rgba(251,191,36,0.1);
+        }
 
         .toast-msg { position:fixed; bottom:calc(var(--nav-height) + var(--safe-bottom) + 24px); left:50%; transform:translateX(-50%); background:#2a2a30; padding:8px 20px; border-radius:50px; font-size:12px; z-index:200; opacity:0; transition:0.3s; }
         .toast-msg.show { opacity:1; bottom:calc(var(--nav-height) + var(--safe-bottom) + 32px); }
@@ -166,15 +246,13 @@
 <body>
 <div class="app">
     <div class="nav-header">
-        <div class="header-left">
-            <div class="header-title">
-                <svg fill="currentColor" viewBox="0 0 210 256"><path d="M174.55 144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.7-9.3-21-21-21H25C12.6 2 2 12.6 2 25v183c0 11.9 11 22 22.8 22h114.2c1.2 0 2.3 1 2.2 2.2-.1 1.3-1.2 1.8-2.4 1.8h-45.5L128 254h80l-33.4-109.5zM82 220.2c-3.2 0-5.6-2.4-5.6-5.6 0-3 2.6-5.6 5.6-5.6 3.2 0 5.6 2.4 5.6 5.6 0 3.2-2.4 5.6-5.6 5.6zM144 138h-19.7c-5.3 0-9.8 4.7-9.8 10s4.5 10 9.8 10h19.8v42H18V31h126v107zM80.6 134.9c23.7 0 43-19.2 43-43s-19.2-43-43-43-43 19.2-43 43 19.2 43 43 43zm-2.4-39.4c-7.9-2.8-12.8-6.7-12.8-13.8 0-6.5 4.3-11.7 12.3-13.3v-7.1h5.9v6.7c4.9 0 8.5 1 11.1 2.4l-2.4 8.5c-2-.8-5.1-2.2-9.5-2.2s-6.7 2.2-6.7 4.3c0 3 2.8 4.1 8.7 6.5 8.1 3 11.9 7.1 11.9 13.8 0 6.7-4.1 11.9-12.8 13.8v6.7h-5.9v-6.5c-5.1 0-10.3-1.4-12.8-2.8l2.2-8.7c2.8 1.4 7.1 3 11.7 3 4.9 0 7.3-2.2 7.3-5.1s-2.4-4.5-8.2-6.7z"/></svg>
-                考勤·薪资预算
-            </div>
-            <div class="month-control">
-                <button class="month-arrow" id="prevMonthBtn">◀</button>
-                <button class="month-arrow" id="nextMonthBtn">▶</button>
-            </div>
+        <div class="header-title">
+            <svg fill="currentColor" viewBox="0 0 210 256"><path d="M174.55 144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.7-9.3-21-21-21H25C12.6 2 2 12.6 2 25v183c0 11.9 11 22 22.8 22h114.2c1.2 0 2.3 1 2.2 2.2-.1 1.3-1.2 1.8-2.4 1.8h-45.5L128 254h80l-33.4-109.5zM82 220.2c-3.2 0-5.6-2.4-5.6-5.6 0-3 2.6-5.6 5.6-5.6 3.2 0 5.6 2.4 5.6 5.6 0 3.2-2.4 5.6-5.6 5.6zM144 138h-19.7c-5.3 0-9.8 4.7-9.8 10s4.5 10 9.8 10h19.8v42H18V31h126v107zM80.6 134.9c23.7 0 43-19.2 43-43s-19.2-43-43-43-43 19.2-43 43 19.2 43 43 43zm-2.4-39.4c-7.9-2.8-12.8-6.7-12.8-13.8 0-6.5 4.3-11.7 12.3-13.3v-7.1h5.9v6.7c4.9 0 8.5 1 11.1 2.4l-2.4 8.5c-2-.8-5.1-2.2-9.5-2.2s-6.7 2.2-6.7 4.3c0 3 2.8 4.1 8.7 6.5 8.1 3 11.9 7.1 11.9 13.8 0 6.7-4.1 11.9-12.8 13.8v6.7h-5.9v-6.5c-5.1 0-10.3-1.4-12.8-2.8l2.2-8.7c2.8 1.4 7.1 3 11.7 3 4.9 0 7.3-2.2 7.3-5.1s-2.4-4.5-8.2-6.7z"/></svg>
+            考勤·薪资预算
+        </div>
+        <div class="month-control">
+            <button class="month-arrow" id="prevMonthBtn">◀</button>
+            <button class="month-arrow" id="nextMonthBtn">▶</button>
         </div>
         <button class="save-salary-btn" id="globalSaveSalaryBtn">💾</button>
     </div>
@@ -205,28 +283,42 @@
 </nav>
 
 <div id="shiftModal" class="modal-overlay">
-    <div class="modal-card">
-        <div class="option-group">
-            <button class="shift-option work" data-shift="work">白班</button>
-            <button class="shift-option night" data-shift="night">夜班</button>
-            <button class="shift-option rest" data-shift="rest">休息</button>
-            <button class="shift-option holiday" data-shift="holiday">法定</button>
-        </div>
+    <div class="option-group">
+        <button class="shift-option work" data-shift="work">
+            <span class="shift-icon">☀️</span>
+            <span class="shift-label">白 班</span>
+            <span class="shift-sub">日间出勤</span>
+        </button>
+        <button class="shift-option night" data-shift="night">
+            <span class="shift-icon">🌙</span>
+            <span class="shift-label">夜 班</span>
+            <span class="shift-sub">夜间出勤</span>
+        </button>
+        <button class="shift-option rest" data-shift="rest">
+            <span class="shift-icon">💤</span>
+            <span class="shift-label">休 息</span>
+            <span class="shift-sub">当日休息</span>
+        </button>
+        <button class="shift-option holiday" data-shift="holiday">
+            <span class="shift-icon">🎉</span>
+            <span class="shift-label">法 定</span>
+            <span class="shift-sub">法定假日</span>
+        </button>
     </div>
 </div>
 <div id="toastMsg" class="toast-msg"></div>
 
 <script>
 (function(){
-    const STORAGE_PREFIX = 'workhours_v26_';
+    const STORAGE_PREFIX = 'workhours_v27_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
     let year, month, data = [], activeTab = 'schedule';
     let editingRow = null, pendingRow = null;
 
-    const SALARY_STORAGE = 'salary_config_v16';
+    const SALARY_STORAGE = 'salary_config_v17';
     let salaryConfig = { baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0, insuranceDeduction:0, personalTax:0, manualOvertimePay:null };
     let fullWorkHours = 160;
-    const FULL_HOURS_KEY = 'full_work_hours_v7';
+    const FULL_HOURS_KEY = 'full_work_hours_v8';
     let salaryHistory = {};
 
     const dom = {
@@ -392,7 +484,7 @@
         const currentSalary = computeSalary();
         const key = year + '_' + month;
         salaryHistory[key] = { year, month, config: JSON.parse(JSON.stringify(salaryConfig)), fullWorkHours, gross: currentSalary.gross, net: currentSalary.net, timestamp: Date.now() };
-        localStorage.setItem('salary_history_v6', JSON.stringify(salaryHistory));
+        localStorage.setItem('salary_history_v7', JSON.stringify(salaryHistory));
         showToast(`已保存 ${year}年${month}月 薪资单`);
     }
 
