@@ -330,6 +330,7 @@
         .edit-trigger svg { width: 18px; height: 18px; stroke: #999; stroke-width: 1.7; }
         .edit-trigger.done svg { stroke: var(--accent); }
 
+        /* ===== 底部导航：终极贴底方案 ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -337,14 +338,24 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 500px;
+            height: var(--nav-height);          /* 只包含图标区域的高度 */
             background: #0b0b10;
-            border-top: 1px solid rgba(255,255,255,0.06);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            height: var(--nav-height);
-            padding-bottom: var(--safe-bottom);
             z-index: 10;
+            /* 无任何 padding-bottom，图标紧贴容器底部 */
+        }
+        /* 安全区背景延伸层：位于导航栏下方，不占据内部空间 */
+        .bottom-nav::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: var(--safe-bottom);
+            background: #0b0b10;
+            pointer-events: none;
         }
         .nav-item {
             display: flex;
@@ -509,22 +520,19 @@
     function loadFullHours() { try { const val = localStorage.getItem(FULL_HOURS_KEY); if(val !== null) fullWorkHours = parseInt(val); } catch(e){} if(isNaN(fullWorkHours)||fullWorkHours<0) fullWorkHours=160; }
     function saveFullHours() { localStorage.setItem(FULL_HOURS_KEY, fullWorkHours.toString()); }
 
-    /* 最终工时计算逻辑：
+    /* 最终工时计算：
        总工时 = 所有日期的平时工时 + 所有非法定假日的加班工时
        延时加班工时 = 所有非法定假日的加班工时
-       法定假日加班工时 = 法定假日的加班工时（用于3倍加班费） */
+       法定假日加班工时 = 法定假日的加班工时（不计入总工时，单独用于3倍加班费） */
     function computeWorkStats() {
         let totalHours = 0, overtimeHours = 0, holidayOvertime = 0;
         for(let i=0;i<data.length;i++) {
             const day = data[i];
             const normal = day.normal||0, overtime = day.overtime||0;
-            // 总工时：所有日期的平时工时都计入（含法定假日）
             totalHours += normal;
             if(day.shift === 'holiday') {
-                // 法定假日的加班工时单独统计，不计入总工时和延时加班
                 holidayOvertime += overtime;
             } else {
-                // 非法定假日的加班工时计入总工时和延时加班工时
                 totalHours += overtime;
                 overtimeHours += overtime;
             }
