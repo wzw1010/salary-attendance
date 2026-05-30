@@ -664,7 +664,7 @@
         const key = year + '_' + month;
         salaryHistory[key] = { year, month, config: JSON.parse(JSON.stringify(salaryConfig)), fullWorkHours, gross: currentSalary.gross, net: currentSalary.net, timestamp: Date.now() };
         localStorage.setItem('salary_history_v3', JSON.stringify(salaryHistory));
-        showToast(`✅ 已保存 ${year}年${month}月 薪资单`);
+        showToast(`已保存 ${year}年${month}月 薪资单`);
     }
 
     function switchTab(tab) {
