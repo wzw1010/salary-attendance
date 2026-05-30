@@ -22,9 +22,13 @@
             --accent: #F0B90B;
             --accent-text: #121212;
             --color-work: #7aa9ff;
+            --color-work-bg: #2a3a5c;
             --color-night: #b794f4;
+            --color-night-bg: #3d2b5e;
             --color-rest: #9ca3af;
+            --color-rest-bg: #2a3a3f;
             --color-holiday: #fbbf24;
+            --color-holiday-bg: #5e3a2a;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
             --nav-height: 56px;
@@ -42,64 +46,38 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
-        .app {
-            max-width: 500px;
-            margin: 0 auto;
-        }
+        .app { max-width: 500px; margin: 0 auto; }
 
-        /* 顶部导航 (sticky, 参照基金页面) */
+        /* 顶部导航 */
         .nav-header {
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            position: sticky; top: 0; z-index: 10;
             background: rgba(18, 18, 26, 0.92);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            display: flex;
-            align-items: center;
+            backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+            display: flex; align-items: center;
             padding: 12px 16px 8px;
-            margin-left: -14px;
-            margin-right: -14px;
+            margin-left: -14px; margin-right: -14px;
             border-bottom: 1px solid var(--border-subtle);
             min-height: 50px;
             gap: 12px;
         }
         .header-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 800;
-            font-size: 18px;
-            color: var(--accent);
-            white-space: nowrap;
-            flex-shrink: 0;
+            display: flex; align-items: center; gap: 8px;
+            font-weight: 800; font-size: 18px; color: var(--accent);
+            white-space: nowrap; flex-shrink: 0;
             margin-right: auto;
+            margin-left: 1.2em;          /* 适度右移，给箭头留空间 */
         }
         .header-title svg { width:22px; height:22px; fill:currentColor; }
         .month-control {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            display: flex; align-items: center; gap: 6px;
             flex-shrink: 0;
+            margin-right: 0.5em;          /* 避免紧贴右边 */
         }
         .month-arrow {
             width: 32px; height: 32px;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.06);
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 13px; color: #bbb; border: none;
-        }
-        .save-salary-btn {
-            background: var(--accent);
-            border: none;
-            border-radius: 22px;
-            padding: 7px 13px;
-            font-weight: 700;
-            font-size: 12px;
-            color: var(--accent-text);
-            cursor: pointer;
-            flex-shrink: 0;
+            background: rgba(255,255,255,0.06); border-radius: 50%;
+            cursor: pointer; font-size: 13px; color: #bbb; border: none;
         }
 
         .content { padding: 0 14px; }
@@ -129,24 +107,25 @@
         .rec-col { flex:1; display:flex; align-items:center; justify-content:center; }
         .rec-date { font-weight:700; font-size:14px; color:#ddd; }
         .shift-badge { font-size:11px; font-weight:700; padding:4px 9px; border-radius:36px; background:rgba(255,255,255,0.07); }
+        /* 恢复班次徽章颜色 */
+        .shift-badge.work { background:var(--color-work-bg); color:var(--color-work); }
+        .shift-badge.night { background:var(--color-night-bg); color:var(--color-night); }
+        .shift-badge.rest { background:var(--color-rest-bg); color:var(--color-rest); }
+        .shift-badge.holiday { background:var(--color-holiday-bg); color:var(--color-holiday); }
+        .shift-badge.none { background:#2a2a2e; color:#888; }
         .hours-pair { display:flex; flex-direction:column; align-items:center; }
         .hours-label { font-size:9px; color:var(--text-secondary); } .hours-value { font-weight:800; font-size:13px; }
-        .edit-input-field input { width:60px; height:32px; background:var(--bg-input); border:1px solid var(--accent); border-radius:12px; text-align:center; font-size:13px; font-weight:700; color:white; }
-        .edit-trigger { width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-        .edit-trigger svg { width:18px; height:18px; stroke:#999; } .edit-trigger.done svg { stroke:var(--accent); }
+        .edit-input-field input { width:60px; height:32px; background:var(--bg-input); border:1px solid var(--accent); border-radius:12px; text-align:center; font-size:13px; font-weight:700; color:white; -webkit-appearance:none; }
+        .edit-trigger { width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+        .edit-trigger svg { width:18px; height:18px; stroke:#999; stroke-width:1.7; } .edit-trigger.done svg { stroke:var(--accent); }
 
-        /* 底部导航 (无顶部边框) */
+        /* 底部导航：图标靠下 */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 500px;
+            position: fixed; bottom:0; left:50%; transform:translateX(-50%);
+            width:100%; max-width:500px;
             background: var(--bg-primary);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
+            display: flex; justify-content: space-around;
+            align-items: flex-end;
             height: var(--nav-height);
             padding-bottom: var(--safe-bottom);
             z-index: 50;
@@ -175,53 +154,39 @@
         .result-line { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:17px; font-weight:800; }
         .result-label { color:#8b8f9a; } .result-value { font-weight:800; }
 
-        /* ===== 液态毛玻璃弹窗 ===== */
+        /* 液态毛玻璃弹窗 */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 100;
             display: flex; align-items: center; justify-content: center;
             background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            opacity: 0; pointer-events: none; transition: opacity 0.35s;
         }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .option-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            width: 85%;
-            max-width: 360px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+            width: 85%; max-width: 360px;
         }
         .shift-option {
-            position: relative;
-            border-radius: 22px;
-            padding: 20px 10px 18px;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.12);
-            font-family: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+            position: relative; border-radius: 22px; padding: 20px 10px 18px;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.12);
+            font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px;
             transition: all 0.25s cubic-bezier(0.25,0.8,0.25,1.2);
             overflow: hidden;
             background: rgba(30,30,40,0.55);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.06) inset;
-            opacity: 0;
-            transform: translateY(20px) scale(0.9);
+            opacity: 0; transform: translateY(20px) scale(0.9);
             color: #ccc;
         }
         .shift-option::before {
-            content: '';
-            position: absolute; inset: 0; border-radius: 22px;
+            content: ''; position: absolute; inset: 0; border-radius: 22px;
             background: radial-gradient(ellipse at 30% 10%, rgba(255,200,120,0.12) 0%, transparent 50%),
                         radial-gradient(ellipse at 70% 80%, rgba(160,140,255,0.1) 0%, transparent 50%);
             pointer-events: none; z-index: 0;
         }
         .shift-option > * { position: relative; z-index: 1; }
-        .shift-option:active { transform: scale(0.94) !important; transition: transform 0.1s ease; background: rgba(50,50,65,0.7); }
+        .shift-option:active { transform: scale(0.94) !important; transition: transform 0.1s; background: rgba(50,50,65,0.7); }
         .modal-overlay.show .shift-option { opacity: 1; transform: translateY(0) scale(1); }
         .modal-overlay.show .shift-option:nth-child(1) { transition-delay: 0.06s; }
         .modal-overlay.show .shift-option:nth-child(2) { transition-delay: 0.12s; }
@@ -234,10 +199,7 @@
         .shift-option.work { color:#7aa9ff; border-color:rgba(122,169,255,0.35); background:rgba(42,58,92,0.65); }
         .shift-option.night { color:#b794f4; border-color:rgba(183,148,244,0.35); background:rgba(61,43,94,0.65); }
         .shift-option.rest { color:#9ca3af; border-color:rgba(156,163,175,0.3); background:rgba(42,58,63,0.6); }
-        .shift-option.holiday {
-            color:#fbbf24; border-color:rgba(251,191,36,0.4); background:rgba(94,58,42,0.65);
-            box-shadow:0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.08) inset, 0 0 40px rgba(251,191,36,0.1);
-        }
+        .shift-option.holiday { color:#fbbf24; border-color:rgba(251,191,36,0.4); background:rgba(94,58,42,0.65); box-shadow:0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.08) inset, 0 0 40px rgba(251,191,36,0.1); }
 
         .toast-msg { position:fixed; bottom:calc(var(--nav-height) + var(--safe-bottom) + 24px); left:50%; transform:translateX(-50%); background:#2a2a30; padding:8px 20px; border-radius:50px; font-size:12px; z-index:200; opacity:0; transition:0.3s; }
         .toast-msg.show { opacity:1; bottom:calc(var(--nav-height) + var(--safe-bottom) + 32px); }
@@ -254,7 +216,6 @@
             <button class="month-arrow" id="prevMonthBtn">◀</button>
             <button class="month-arrow" id="nextMonthBtn">▶</button>
         </div>
-        <button class="save-salary-btn" id="globalSaveSalaryBtn">💾</button>
     </div>
 
     <div class="content">
@@ -284,42 +245,25 @@
 
 <div id="shiftModal" class="modal-overlay">
     <div class="option-group">
-        <button class="shift-option work" data-shift="work">
-            <span class="shift-icon">☀️</span>
-            <span class="shift-label">白 班</span>
-            <span class="shift-sub">日间出勤</span>
-        </button>
-        <button class="shift-option night" data-shift="night">
-            <span class="shift-icon">🌙</span>
-            <span class="shift-label">夜 班</span>
-            <span class="shift-sub">夜间出勤</span>
-        </button>
-        <button class="shift-option rest" data-shift="rest">
-            <span class="shift-icon">💤</span>
-            <span class="shift-label">休 息</span>
-            <span class="shift-sub">当日休息</span>
-        </button>
-        <button class="shift-option holiday" data-shift="holiday">
-            <span class="shift-icon">🎉</span>
-            <span class="shift-label">法 定</span>
-            <span class="shift-sub">法定假日</span>
-        </button>
+        <button class="shift-option work" data-shift="work"><span class="shift-icon">☀️</span><span class="shift-label">白 班</span><span class="shift-sub">日间出勤</span></button>
+        <button class="shift-option night" data-shift="night"><span class="shift-icon">🌙</span><span class="shift-label">夜 班</span><span class="shift-sub">夜间出勤</span></button>
+        <button class="shift-option rest" data-shift="rest"><span class="shift-icon">💤</span><span class="shift-label">休 息</span><span class="shift-sub">当日休息</span></button>
+        <button class="shift-option holiday" data-shift="holiday"><span class="shift-icon">🎉</span><span class="shift-label">法 定</span><span class="shift-sub">法定假日</span></button>
     </div>
 </div>
 <div id="toastMsg" class="toast-msg"></div>
 
 <script>
 (function(){
-    const STORAGE_PREFIX = 'workhours_v27_';
+    const STORAGE_PREFIX = 'workhours_v31_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
     let year, month, data = [], activeTab = 'schedule';
     let editingRow = null, pendingRow = null;
 
-    const SALARY_STORAGE = 'salary_config_v17';
+    const SALARY_STORAGE = 'salary_config_v21';
     let salaryConfig = { baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0, insuranceDeduction:0, personalTax:0, manualOvertimePay:null };
     let fullWorkHours = 160;
-    const FULL_HOURS_KEY = 'full_work_hours_v8';
-    let salaryHistory = {};
+    const FULL_HOURS_KEY = 'full_work_hours_v12';
 
     const dom = {
         scheduleStats: document.getElementById('scheduleStatsContainer'),
@@ -427,7 +371,7 @@
         for(let i=0;i<days;i++) {
             const row = data[i];
             const isEdit = (editingRow === i);
-            html += `<div class="record-card${isEdit?' editing':''}" data-row="${i}"><div class="rec-col"><span class="rec-date">${month}-${i+1}</span></div><div class="rec-col"><span class="shift-badge ${row.shift||'none'}">${shiftNames[row.shift]}</span></div><div class="rec-col">${!isEdit ? `<div class="hours-pair"><span class="hours-label">平时</span><span class="hours-value">${(row.normal||0).toFixed(1)}</span></div>` : `<div class="edit-input-field"><input type="number" step="0.5" value="${row.normal}" class="edit-normal"></div>`}</div><div class="rec-col">${!isEdit ? `<div class="hours-pair"><span class="hours-label">加班</span><span class="hours-value">${(row.overtime||0).toFixed(1)}</span></div>` : `<div class="edit-input-field"><input type="number" step="0.5" value="${row.overtime}" class="edit-overtime"></div>`}</div><div class="rec-col"><div class="edit-trigger${isEdit?' done':''}">${isEdit?checkIcon:pencilIcon}</div></div></div>`;
+            html += `<div class="record-card${isEdit?' editing':''}" data-row="${i}"><div class="rec-col"><span class="rec-date">${month}-${i+1}</span></div><div class="rec-col"><span class="shift-badge ${row.shift||'none'}">${shiftNames[row.shift]}</span></div><div class="rec-col">${!isEdit ? `<div class="hours-pair"><span class="hours-label">平时</span><span class="hours-value">${(row.normal||0).toFixed(1)}</span></div>` : `<div class="edit-input-field"><input type="number" step="0.5" value="${row.normal}" class="edit-normal" inputmode="decimal"></div>`}</div><div class="rec-col">${!isEdit ? `<div class="hours-pair"><span class="hours-label">加班</span><span class="hours-value">${(row.overtime||0).toFixed(1)}</span></div>` : `<div class="edit-input-field"><input type="number" step="0.5" value="${row.overtime}" class="edit-overtime" inputmode="decimal"></div>`}</div><div class="rec-col"><div class="edit-trigger${isEdit?' done':''}">${isEdit?checkIcon:pencilIcon}</div></div></div>`;
         }
         dom.recordsList.innerHTML = html;
         document.querySelectorAll('#recordsListContainer .edit-trigger').forEach(btn => btn.addEventListener('click', function(e){
@@ -480,14 +424,6 @@
         document.getElementById('resetOvertimeBtn')?.addEventListener('click', () => { salaryConfig.manualOvertimePay = null; saveSalaryConfig(); renderSalaryPage(); });
     }
 
-    function saveCurrentSalary() {
-        const currentSalary = computeSalary();
-        const key = year + '_' + month;
-        salaryHistory[key] = { year, month, config: JSON.parse(JSON.stringify(salaryConfig)), fullWorkHours, gross: currentSalary.gross, net: currentSalary.net, timestamp: Date.now() };
-        localStorage.setItem('salary_history_v7', JSON.stringify(salaryHistory));
-        showToast(`已保存 ${year}年${month}月 薪资单`);
-    }
-
     function switchTab(tab) {
         if(activeTab === tab) return;
         if(editingRow !== null) finishEditing(editingRow);
@@ -526,7 +462,6 @@
     document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchTab(item.dataset.tab)));
     document.getElementById('prevMonthBtn').addEventListener('click', () => changeMonth(-1));
     document.getElementById('nextMonthBtn').addEventListener('click', () => changeMonth(1));
-    document.getElementById('globalSaveSalaryBtn').addEventListener('click', saveCurrentSalary);
     dom.shiftModal.addEventListener('click', (e) => { if(e.target === dom.shiftModal) closeShiftPicker(); });
 
     const now = new Date(); year = now.getFullYear(); month = now.getMonth()+1;
