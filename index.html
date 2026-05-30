@@ -45,10 +45,10 @@
         .app {
             max-width: 500px;
             margin: 0 auto;
-            /* 移除 overflow:hidden，确保 sticky 正常工作 */
+            /* 确保 sticky 正常工作，移除 overflow 限制 */
         }
 
-        /* 顶部导航 (sticky) */
+        /* 顶部导航 sticky */
         .nav-header {
             position: sticky;
             top: var(--safe-top);
@@ -62,9 +62,6 @@
             justify-content: space-between;
             border-bottom: 1px solid var(--border-subtle);
             min-height: 50px;
-            margin: 0 -14px;
-            padding-left: calc(16px + 14px);
-            padding-right: calc(16px + 14px);
         }
         .header-left { display:flex; align-items:center; gap:10px; flex:1; }
         .header-title { display:flex; align-items:center; gap:8px; font-weight:800; font-size:18px; color:var(--accent); white-space:nowrap; }
@@ -106,7 +103,7 @@
         .edit-trigger { width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
         .edit-trigger svg { width:18px; height:18px; stroke:#999; } .edit-trigger.done svg { stroke:var(--accent); }
 
-        /* 底部导航 (fixed 贴底) */
+        /* 底部导航 (无顶部边框) */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -115,13 +112,13 @@
             width: 100%;
             max-width: 500px;
             background: var(--bg-primary);
-            border-top: 1px solid rgba(255,255,255,0.06);
             display: flex;
             justify-content: space-around;
             align-items: center;
             height: var(--nav-height);
             padding-bottom: var(--safe-bottom);
             z-index: 50;
+            /* 移除 border-top */
         }
         .nav-item {
             width: 48px; height: 40px; border-radius: 14px;
@@ -168,6 +165,7 @@
 </head>
 <body>
 <div class="app">
+    <!-- 顶部导航 -->
     <div class="nav-header">
         <div class="header-left">
             <div class="header-title">
@@ -201,6 +199,7 @@
     </div>
 </div>
 
+<!-- 底部导航，已取消顶部边框 -->
 <nav class="bottom-nav" id="bottomNav">
     <div class="nav-item active" data-tab="schedule"><svg viewBox="0 0 24 24" fill="none"><path d="M6.96 2C7.38 2 7.72 2.31 7.72 2.69v1.4c.67-.01 1.42-.01 2.27-.01h4.03c.85 0 1.6 0 2.27.01V2.69c0-.38.34-.69.76-.69s.75.31.75.69v1.46c1.45.11 2.4.37 3.1 1.01.7.64 1 1.51 1.12 2.84v1H2V8c.12-1.33.4-2.2 1.1-2.84.7-.64 1.66-.9 3.1-1.01V2.69c0-.38.34-.69.76-.69z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84-.01-2.33-.03-3H2.01C1.99 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.35 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z" fill="currentColor"/><path fill-rule="evenodd" d="M14 12.25c-.97 0-1.75.78-1.75 1.75v2c0 .97.78 1.75 1.75 1.75s1.75-.78 1.75-1.75v-2c0-.97-.78-1.75-1.75-1.75z" fill="currentColor"/></svg></div>
     <div class="nav-item" data-tab="records"><svg viewBox="0 0 24 24" fill="none"><path d="M6.96 2C7.38 2 7.72 2.31 7.72 2.69v1.4c.67-.01 1.42-.01 2.27-.01h4.03c.85 0 1.6 0 2.27.01V2.69c0-.38.34-.69.76-.69s.75.31.75.69v1.46c1.45.11 2.4.37 3.1 1.01.7.64 1 1.51 1.12 2.84v1H2V8c.12-1.33.4-2.2 1.1-2.84.7-.64 1.66-.9 3.1-1.01V2.69c0-.38.34-.69.76-.69z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84-.01-2.33-.03-3H2.01C1.99 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.35 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z" fill="currentColor"/><path fill-rule="evenodd" d="M16 13.25a.75.75 0 0 1 .75.75v1.25L18 15.25a.75.75 0 0 1 0 1.5h-1.25V18a.75.75 0 0 1-1.5 0v-1.25H14a.75.75 0 0 1 0-1.5h1.25V14a.75.75 0 0 1 .75-.75z" fill="currentColor"/></svg></div>
@@ -221,15 +220,15 @@
 
 <script>
 (function(){
-    const STORAGE_PREFIX = 'workhours_v24_';
+    const STORAGE_PREFIX = 'workhours_v25_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
     let year, month, data = [], activeTab = 'schedule';
     let editingRow = null, pendingRow = null;
 
-    const SALARY_STORAGE = 'salary_config_v14';
+    const SALARY_STORAGE = 'salary_config_v15';
     let salaryConfig = { baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0, insuranceDeduction:0, personalTax:0, manualOvertimePay:null };
     let fullWorkHours = 160;
-    const FULL_HOURS_KEY = 'full_work_hours_v5';
+    const FULL_HOURS_KEY = 'full_work_hours_v6';
     let salaryHistory = {};
 
     const dom = {
@@ -395,7 +394,7 @@
         const currentSalary = computeSalary();
         const key = year + '_' + month;
         salaryHistory[key] = { year, month, config: JSON.parse(JSON.stringify(salaryConfig)), fullWorkHours, gross: currentSalary.gross, net: currentSalary.net, timestamp: Date.now() };
-        localStorage.setItem('salary_history_v4', JSON.stringify(salaryHistory));
+        localStorage.setItem('salary_history_v5', JSON.stringify(salaryHistory));
         showToast(`已保存 ${year}年${month}月 薪资单`);
     }
 
