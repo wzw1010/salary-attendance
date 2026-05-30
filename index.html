@@ -11,9 +11,8 @@
     <link rel="apple-touch-icon" href="icon-512.png">
     <title>考勤·薪资预算</title>
     <style>
-        /* ========== 全局变量 ========== */
         :root {
-            --bg-primary: #0d0d11;        /* 主背景色，与底部导航统一 */
+            --bg-primary: #0d0d11;
             --bg-card: #181820;
             --bg-card-alt: #141418;
             --bg-input: #2a2a30;
@@ -21,22 +20,20 @@
             --text-primary: #e8eaef;
             --text-secondary: #9ca3af;
             --text-muted: #5c606d;
-            --accent: #F0B90B;              /* 主色调：金色 */
+            --accent: #F0B90B;
             --accent-text: #121212;
-            --color-work: #7aa9ff;          /* 白班文字色 */
-            --color-work-bg: #2a3a5c;       /* 白班背景色 */
-            --color-night: #b794f4;         /* 夜班文字色 */
-            --color-night-bg: #3d2b5e;      /* 夜班背景色 */
-            --color-rest: #9ca3af;          /* 休息文字色 */
-            --color-rest-bg: #2a3a3f;       /* 休息背景色 */
-            --color-holiday: #fbbf24;       /* 法定文字色 */
-            --color-holiday-bg: #5e3a2a;    /* 法定背景色 */
+            --color-work: #7aa9ff;
+            --color-work-bg: #2a3a5c;
+            --color-night: #b794f4;
+            --color-night-bg: #3d2b5e;
+            --color-rest: #9ca3af;
+            --color-rest-bg: #2a3a3f;
+            --color-holiday: #fbbf24;
+            --color-holiday-bg: #5e3a2a;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
-            --nav-height: 56px;             /* 底部导航高度 */
+            --nav-height: 56px;
         }
-
-        /* ========== 基础重置 ========== */
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         html { height:100%; overflow-x:hidden; }
         body {
@@ -44,7 +41,6 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100dvh;
-            /* 为固定顶栏和底栏预留空间 */
             padding-top: calc(50px + var(--safe-top));
             padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px);
             overflow-x: hidden;
@@ -52,13 +48,11 @@
         }
         .app { max-width: 500px; margin: 0 auto; }
 
-        /* ========== 顶部导航栏 ========== */
         .nav-header {
             position: fixed; top: var(--safe-top); left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 500px; z-index: 10;
-            background: var(--bg-primary);                /* 与底部导航同色 */
-            backdrop-filter: blur(28px);                  /* 毛玻璃效果保留 */
-            -webkit-backdrop-filter: blur(28px);
+            background: var(--bg-primary);
+            backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
             display: flex; align-items: center;
             padding: 12px 16px 8px;
             border-bottom: 1px solid var(--border-subtle);
@@ -72,34 +66,31 @@
         }
         .header-title svg { width:22px; height:22px; fill:currentColor; }
         .month-control { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-right: 0.5em; }
-        .month-arrow {
-            width: 32px; height: 32px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.06); border-radius: 50%;
-            cursor: pointer; font-size: 13px; color: #bbb; border: none;
-        }
+        .month-arrow { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); border-radius: 50%; cursor: pointer; font-size: 13px; color: #bbb; border: none; }
 
-        /* ========== 内容区 ========== */
         .content { padding: 0 14px; }
         .tab-pane { display:none; animation:fadeIn 0.22s; }
         .tab-pane.active { display:block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-
-        /* 分割线 */
         .divider { margin:0; height:2px; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 15%, rgba(128,128,128,0.15) 50%, rgba(255,255,255,0.06) 85%, transparent); opacity:0.8; }
 
-        /* ========== 排班页面 ========== */
+        /* ===== 排班四宫格（统一为柔和暗底） ===== */
         .schedule-stats-area { padding-top:37px; }
-        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
-        .stat-card { background:var(--bg-card-alt); border-radius:18px; padding:10px 3px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07); }
-        .stat-label { font-size:10px; color:var(--text-muted); margin-bottom:3px; }
-        .stat-number { font-size:16px; font-weight:800; color:white; }
-        /* 满勤工时输入框，调用数字键盘 */
-        .stat-number-input {
-            background:var(--bg-input); border:1px solid transparent; border-radius:12px;
-            width:70%; max-width:58px; text-align:center; color:white; font-size:15px; font-weight:700;
-            padding:3px 2px; margin-top:2px; -webkit-appearance:none;
+        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; }          /* 间距与记录网格一致 */
+        .stat-card {
+            background: #18181f; border: 1px solid rgba(255,255,255,0.04);               /* 柔和暗底 */
+            border-radius:14px; padding:12px 4px 10px; text-align:center;
+            box-shadow:0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            min-height:78px; gap:6px;
         }
+        .stat-label { font-size:10px; color:var(--text-muted); font-weight:600; letter-spacing:0.3px; }
+        .stat-number { font-size:16px; font-weight:800; color:white; }
+        .stat-number-input {
+            background:transparent; border:none; color:#e8eaef; font-size:16px; font-weight:800;
+            text-align:center; width:100%; font-family:inherit; -webkit-appearance:none;
+        }
+
         .schedule-calendar-area { padding-top:37px; }
         .calendar-week { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; margin-bottom:7px; color:var(--text-secondary); font-size:11px; font-weight:600; }
         .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
@@ -109,188 +100,80 @@
         .cal-day.work { background:#2a3a5c; } .cal-day.night { background:#3d2b5e; } .cal-day.rest { background:#2a3a3f; } .cal-day.holiday { background:#5e3a2a; }
         .day-number { font-size:16px; font-weight:700; color:#f0f0f0; } .day-label { font-size:9px; font-weight:700; }
 
-        /* ========== 记录页面网格（折角水印） ========== */
-        .record-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            padding-top: 31.3px;           /* 顶部与导航间距20px */
-        }
-        .record-cell {
-            position: relative;
-            border-radius: 14px;
-            padding: 14px 4px 8px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            min-height: 72px;
-            overflow: hidden;
-        }
-        .record-cell:active { transform: scale(0.96); opacity: 0.9; }
-        .record-cell.editing { box-shadow: 0 0 0 2px var(--accent), 0 0 20px rgba(240,185,11,0.25); z-index: 2; }
-        /* 班次背景色 */
-        .record-cell.work { background: var(--color-work-bg); }
-        .record-cell.night { background: var(--color-night-bg); }
-        .record-cell.rest { background: var(--color-rest-bg); }
-        .record-cell.holiday { background: var(--color-holiday-bg); }
-        .record-cell.none { background: #1e1e24; }
-
-        /* 折角效果（右下阴影） */
-        .record-cell::after {
-            content: ''; position: absolute; top: -6px; right: -6px; width: 38px; height: 38px;
-            background: linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.05) 70%, transparent 100%);
-            transform: rotate(15deg); box-shadow: 0 2px 8px rgba(0,0,0,0.5); border-radius: 0 0 0 6px;
-            z-index: 1; transition: opacity 0.25s; pointer-events: none;
-        }
-        /* 折角高光 */
-        .record-cell::before {
-            content: ''; position: absolute; top: 0; right: 0; width: 40px; height: 40px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
-            z-index: 2; pointer-events: none; border-radius: 0 14px 0 0;
-        }
-        .record-cell.editing::after { opacity: 0.2; }
-        .record-cell.editing::before { opacity: 0.2; }
-
-        /* 水印日期（半透明白色，加粗） */
-        .cell-date {
-            position: absolute; top: 3px; right: 4px; z-index: 3;
-            font-size: 16px; font-weight: 900;
-            color: rgba(255, 255, 255, 0.45);
-            letter-spacing: -0.3px; line-height: 1; pointer-events: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-            transition: opacity 0.25s;
-        }
+        /* 记录网格（保持不变） */
+        .record-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding-top: 20px; }
+        .record-cell { position: relative; border-radius: 14px; padding: 14px 4px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset; transition: all 0.25s; cursor: pointer; min-height: 72px; overflow: hidden; }
+        .record-cell:active { transform: scale(0.96); }
+        .record-cell.editing { box-shadow: 0 0 0 2px var(--accent), 0 0 20px rgba(240,185,11,0.25); }
+        .record-cell.work { background: var(--color-work-bg); } .record-cell.night { background: var(--color-night-bg); } .record-cell.rest { background: var(--color-rest-bg); } .record-cell.holiday { background: var(--color-holiday-bg); } .record-cell.none { background: #1e1e24; }
+        .record-cell::after { content: ''; position: absolute; top: -6px; right: -6px; width: 38px; height: 38px; background: linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.05) 70%, transparent 100%); transform: rotate(15deg); box-shadow: 0 2px 8px rgba(0,0,0,0.5); border-radius: 0 0 0 6px; z-index: 1; transition: opacity 0.25s; pointer-events: none; }
+        .record-cell::before { content: ''; position: absolute; top: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%); z-index: 2; pointer-events: none; border-radius: 0 14px 0 0; }
+        .record-cell.editing::after { opacity: 0.2; } .record-cell.editing::before { opacity: 0.2; }
+        .cell-date { position: absolute; top: 3px; right: 4px; z-index: 3; font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.45); text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: none; }
         .record-cell.editing .cell-date { opacity: 0.15; }
-
         .cell-hours { display: flex; gap: 6px; align-items: center; justify-content: center; position: relative; z-index: 4; }
         .cell-hour-item { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
-        .cell-hour-label { font-size: 7px; font-weight: 500; opacity: 0.7; color: rgba(255,255,255,0.65); letter-spacing: 0.2px; }
-        .cell-hour-value { font-weight: 800; font-size: 12px; color: #ffffff; opacity: 0.95; letter-spacing: -0.2px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-
-        /* 编辑覆盖层 */
-        .edit-overlay {
-            display: none; position: absolute; inset: 0; background: rgba(22,22,30,0.96);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 14px;
-            flex-direction: column; align-items: center; justify-content: center; gap: 4px; z-index: 10; padding: 6px;
-        }
+        .cell-hour-label { font-size: 7px; font-weight: 500; opacity: 0.7; color: rgba(255,255,255,0.65); }
+        .cell-hour-value { font-weight: 800; font-size: 12px; color: #fff; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .edit-overlay { display: none; position: absolute; inset: 0; background: rgba(22,22,30,0.96); backdrop-filter: blur(8px); border-radius: 14px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; z-index: 10; padding: 6px; }
         .record-cell.editing .edit-overlay { display: flex; }
-        .record-cell.editing .cell-hours { visibility: hidden; }
-        /* 编辑输入框统一调用数字键盘 */
-        .edit-overlay input {
-            width: 82%; height: 24px; background: #2a2a30; border: 1px solid #3a3a44;
-            border-radius: 10px; text-align: center; font-size: 12px; font-weight: 700; color: white;
-            font-family: inherit; -webkit-appearance: none;
-        }
-        .edit-overlay input:focus { border-color: var(--accent); outline: none; }
-        .edit-done {
-            width: 24px; height: 24px; border-radius: 50%; background: var(--accent); border: none;
-            color: #121212; font-size: 14px; font-weight: 800; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; line-height: 1;
-            position: absolute; top: 4px; right: 4px; z-index: 11;
-        }
+        .edit-overlay input { width: 82%; height: 24px; background: #2a2a30; border: 1px solid #3a3a44; border-radius: 10px; text-align: center; font-size: 12px; font-weight: 700; color: white; -webkit-appearance:none; }
+        .edit-done { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); border: none; color: #121212; font-size: 14px; font-weight: 800; cursor: pointer; position: absolute; top: 4px; right: 4px; z-index: 11; }
 
-        /* ========== 底部导航 ========== */
-        .bottom-nav {
-            position: fixed; bottom:0; left:50%; transform:translateX(-50%);
-            width:100%; max-width:500px;
-            background: var(--bg-primary);
-            display: flex; justify-content: space-around;
-            align-items: flex-end;
-            height: var(--nav-height);
-            padding-bottom: var(--safe-bottom);
-            z-index: 50;
-        }
-        .nav-item {
-            width: 48px; height: 40px; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            color: #6b7280; transition: 0.2s; cursor: pointer;
-        }
-        .nav-item.active { color: var(--accent); box-shadow: none; }
+        .bottom-nav { position: fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:500px; background: var(--bg-primary); display: flex; justify-content: space-around; align-items: flex-end; height: var(--nav-height); padding-bottom: var(--safe-bottom); z-index: 50; }
+        .nav-item { width: 48px; height: 40px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #6b7280; transition: 0.2s; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
         .nav-item svg { width:22px; height:22px; stroke:currentColor; fill:none; }
-        .nav-item svg [fill] { fill:currentColor; }
-        .nav-label { display:none; }
 
-        /* ========== 薪资页面 ========== */
-        .salary-section-params { padding-top:33px; } .salary-section-overtime { padding-top:33px; } .salary-section-result { padding-top:33px; }
-        .params-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
-        .param-card { background:var(--bg-card-alt); border-radius:18px; padding:10px 3px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07); display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:74px; }
-        .param-label { font-size:10px; color:#8b8f9a; margin-bottom:4px; }
-        /* 所有参数输入框调用数字键盘 */
+        /* 薪资12宫格（柔和暗底，间距与记录一致） */
+        .salary-section-params { padding-top: 21.2px; }
+        .salary-section-overtime { padding-top: 21.2px; }
+        .salary-section-result { padding-top: 21.2px; }
+        .params-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }          /* 间距5px */
+        .param-card {
+            background: #18181f; border: 1px solid rgba(255,255,255,0.04);
+            border-radius:14px; padding:12px 4px 10px; text-align:center;
+            box-shadow:0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            min-height:78px; gap:6px; transition: transform 0.15s; cursor:default;
+        }
+        .param-card.income .param-label { color: #5ec49e; font-size:10px; font-weight:600; letter-spacing:0.3px; }
+        .param-card.deduction .param-label { color: #d47b6a; font-size:10px; font-weight:600; letter-spacing:0.3px; }
         .param-value {
-            background:var(--bg-input); border:1px solid transparent; border-radius:12px;
-            padding:6px 4px; width:80%; max-width:80px; text-align:center; color:white;
-            font-size:13px; font-weight:700; -webkit-appearance:none;
+            font-size:16px; font-weight:800; letter-spacing:-0.2px;
+            background:transparent; border:none; color:#e8eaef; text-align:center;
+            width:100%; font-family:inherit; -webkit-appearance:none;
         }
+
         .overtime-row { display:flex; gap:7px; }
-        .overtime-card { flex:1; background:var(--bg-card-alt); border-radius:16px; padding:10px 3px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07); display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:70px; gap:3px; }
-        .overtime-title { font-size:10px; color:#8b8f9a; } .overtime-amount { font-size:14px; font-weight:800; color:white; }
-        /* 手动调整加班费输入框 */
-        .overtime-input { background:var(--bg-input); border:1px solid transparent; border-radius:18px; padding:5px 4px; width:82%; max-width:95px; text-align:center; color:white; font-size:12px; -webkit-appearance:none; }
+        .overtime-card { flex:1; background:var(--bg-card-alt); border-radius:16px; padding:10px 3px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.3); display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:70px; gap:3px; }
+        .overtime-title { font-size:10px; color:#8b8f9a; }
+        .overtime-amount { font-size:14px; font-weight:800; color:white; }
+        .overtime-input { background:var(--bg-input); border:1px solid transparent; border-radius:18px; padding:5px 4px; width:82%; text-align:center; color:white; font-size:12px; -webkit-appearance:none; }
         .btn-small { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:18px; padding:4px 9px; font-size:10px; cursor:pointer; color:#ddd; }
-        .salary-result { background:var(--bg-card-alt); border-radius:16px; padding:16px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07); }
+        .salary-result { background:var(--bg-card-alt); border-radius:16px; padding:16px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
         .result-line { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:17px; font-weight:800; }
-        .result-label { color:#8b8f9a; } .result-value { font-weight:800; }
+        .result-label { color:#8b8f9a; }
+        .result-value { font-weight:800; }
 
-        /* ========== 液态毛玻璃弹窗 ========== */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 100;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            opacity: 0; pointer-events: none; transition: opacity 0.35s;
-        }
-        .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .option-group {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-            width: 85%; max-width: 360px;
-        }
-        .shift-option {
-            position: relative; border-radius: 22px; padding: 20px 10px 18px;
-            cursor: pointer; border: 1px solid rgba(255,255,255,0.12);
-            font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px;
-            transition: all 0.25s cubic-bezier(0.25,0.8,0.25,1.2);
-            overflow: hidden;
-            background: rgba(30,30,40,0.55);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.06) inset;
-            opacity: 0; transform: translateY(20px) scale(0.9);
-            color: #ccc;
-        }
-        .shift-option::before {
-            content: ''; position: absolute; inset: 0; border-radius: 22px;
-            background: radial-gradient(ellipse at 30% 10%, rgba(255,200,120,0.12) 0%, transparent 50%),
-                        radial-gradient(ellipse at 70% 80%, rgba(160,140,255,0.1) 0%, transparent 50%);
-            pointer-events: none; z-index: 0;
-        }
-        .shift-option > * { position: relative; z-index: 1; }
-        .shift-option:active { transform: scale(0.94) !important; transition: transform 0.1s; background: rgba(50,50,65,0.7); }
-        .modal-overlay.show .shift-option { opacity: 1; transform: translateY(0) scale(1); }
-        .modal-overlay.show .shift-option:nth-child(1) { transition-delay: 0.06s; }
-        .modal-overlay.show .shift-option:nth-child(2) { transition-delay: 0.12s; }
-        .modal-overlay.show .shift-option:nth-child(3) { transition-delay: 0.18s; }
-        .modal-overlay.show .shift-option:nth-child(4) { transition-delay: 0.24s; }
-        .shift-icon { font-size:30px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4)); transition:transform 0.3s; }
-        .shift-option:active .shift-icon { transform:scale(1.2); }
-        .shift-label { font-size:15px; font-weight:700; letter-spacing:0.8px; }
-        .shift-sub { font-size:10px; font-weight:500; opacity:0.65; letter-spacing:0.3px; }
-        .shift-option.work { color:#7aa9ff; border-color:rgba(122,169,255,0.35); background:rgba(42,58,92,0.65); }
-        .shift-option.night { color:#b794f4; border-color:rgba(183,148,244,0.35); background:rgba(61,43,94,0.65); }
-        .shift-option.rest { color:#9ca3af; border-color:rgba(156,163,175,0.3); background:rgba(42,58,63,0.6); }
-        .shift-option.holiday { color:#fbbf24; border-color:rgba(251,191,36,0.4); background:rgba(94,58,42,0.65); box-shadow:0 12px 30px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.08) inset, 0 0 40px rgba(251,191,36,0.1); }
-
+        .modal-overlay { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); opacity: 0; pointer-events: none; transition: 0.35s; }
+        .modal-overlay.show { opacity:1; pointer-events:auto; }
+        .option-group { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 85%; max-width: 360px; }
+        .shift-option { position:relative; border-radius:22px; padding:20px 10px 18px; cursor:pointer; border:1px solid rgba(255,255,255,0.12); display:flex; flex-direction:column; align-items:center; gap:6px; background: rgba(30,30,40,0.55); backdrop-filter: blur(25px); box-shadow:0 12px 30px rgba(0,0,0,0.4); opacity:0; transform: translateY(20px) scale(0.9); color:#ccc; transition: all 0.25s; }
+        .modal-overlay.show .shift-option { opacity:1; transform: translateY(0) scale(1); }
+        .shift-option:active { transform:scale(0.94); }
+        .shift-icon { font-size:30px; }
+        .shift-label { font-size:15px; font-weight:700; }
+        .shift-option.work { color:#7aa9ff; background:rgba(42,58,92,0.65); }
+        .shift-option.night { color:#b794f4; background:rgba(61,43,94,0.65); }
+        .shift-option.rest { color:#9ca3af; background:rgba(42,58,63,0.6); }
+        .shift-option.holiday { color:#fbbf24; background:rgba(94,58,42,0.65); box-shadow:0 0 40px rgba(251,191,36,0.1); }
         .toast-msg { position:fixed; bottom:calc(var(--nav-height) + var(--safe-bottom) + 24px); left:50%; transform:translateX(-50%); background:#2a2a30; padding:8px 20px; border-radius:50px; font-size:12px; z-index:200; opacity:0; transition:0.3s; }
         .toast-msg.show { opacity:1; bottom:calc(var(--nav-height) + var(--safe-bottom) + 32px); }
     </style>
 </head>
 <body>
 <div class="app">
-    <!-- ========== 顶部导航栏 ========== -->
     <div class="nav-header">
         <div class="header-title">
             <svg fill="currentColor" viewBox="0 0 210 256"><path d="M174.55 144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.7-9.3-21-21-21H25C12.6 2 2 12.6 2 25v183c0 11.9 11 22 22.8 22h114.2c1.2 0 2.3 1 2.2 2.2-.1 1.3-1.2 1.8-2.4 1.8h-45.5L128 254h80l-33.4-109.5zM82 220.2c-3.2 0-5.6-2.4-5.6-5.6 0-3 2.6-5.6 5.6-5.6 3.2 0 5.6 2.4 5.6 5.6 0 3.2-2.4 5.6-5.6 5.6zM144 138h-19.7c-5.3 0-9.8 4.7-9.8 10s4.5 10 9.8 10h19.8v42H18V31h126v107zM80.6 134.9c23.7 0 43-19.2 43-43s-19.2-43-43-43-43 19.2-43 43 19.2 43 43 43zm-2.4-39.4c-7.9-2.8-12.8-6.7-12.8-13.8 0-6.5 4.3-11.7 12.3-13.3v-7.1h5.9v6.7c4.9 0 8.5 1 11.1 2.4l-2.4 8.5c-2-.8-5.1-2.2-9.5-2.2s-6.7 2.2-6.7 4.3c0 3 2.8 4.1 8.7 6.5 8.1 3 11.9 7.1 11.9 13.8 0 6.7-4.1 11.9-12.8 13.8v6.7h-5.9v-6.5c-5.1 0-10.3-1.4-12.8-2.8l2.2-8.7c2.8 1.4 7.1 3 11.7 3 4.9 0 7.3-2.2 7.3-5.1s-2.4-4.5-8.2-6.7z"/></svg>
@@ -301,8 +184,6 @@
             <button class="month-arrow" id="nextMonthBtn">▶</button>
         </div>
     </div>
-
-    <!-- ========== 主内容区 ========== -->
     <div class="content">
         <div class="tab-pane active" id="tabSchedule">
             <div class="schedule-stats-area" id="scheduleStatsContainer"></div>
@@ -314,22 +195,20 @@
         </div>
         <div class="tab-pane" id="tabSalary">
             <div class="salary-section-params" id="salaryParamsContainer"></div>
-            <div class="divider" style="margin-top:33px;"></div>
+            <div class="divider" style="margin-top:21.2px;"></div>
             <div class="salary-section-overtime" id="salaryOvertimeContainer"></div>
-            <div class="divider" style="margin-top:33px;"></div>
+            <div class="divider" style="margin-top:21.2px;"></div>
             <div class="salary-section-result" id="salaryResultContainer"></div>
         </div>
     </div>
 </div>
 
-<!-- ========== 底部导航 ========== -->
 <nav class="bottom-nav" id="bottomNav">
-    <div class="nav-item active" data-tab="schedule"><svg viewBox="0 0 24 24" fill="none"><path d="M6.96 2C7.38 2 7.72 2.31 7.72 2.69v1.4c.67-.01 1.42-.01 2.27-.01h4.03c.85 0 1.6 0 2.27.01V2.69c0-.38.34-.69.76-.69s.75.31.75.69v1.46c1.45.11 2.4.37 3.1 1.01.7.64 1 1.51 1.12 2.84v1H2V8c.12-1.33.4-2.2 1.1-2.84.7-.64 1.66-.9 3.1-1.01V2.69c0-.38.34-.69.76-.69z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84-.01-2.33-.03-3H2.01C1.99 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.35 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z" fill="currentColor"/><path fill-rule="evenodd" d="M14 12.25c-.97 0-1.75.78-1.75 1.75v2c0 .97.78 1.75 1.75 1.75s1.75-.78 1.75-1.75v-2c0-.97-.78-1.75-1.75-1.75z" fill="currentColor"/></svg></div>
-    <div class="nav-item" data-tab="records"><svg viewBox="0 0 24 24" fill="none"><path d="M6.96 2C7.38 2 7.72 2.31 7.72 2.69v1.4c.67-.01 1.42-.01 2.27-.01h4.03c.85 0 1.6 0 2.27.01V2.69c0-.38.34-.69.76-.69s.75.31.75.69v1.46c1.45.11 2.4.37 3.1 1.01.7.64 1 1.51 1.12 2.84v1H2V8c.12-1.33.4-2.2 1.1-2.84.7-.64 1.66-.9 3.1-1.01V2.69c0-.38.34-.69.76-.69z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84-.01-2.33-.03-3H2.01C1.99 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.35 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z" fill="currentColor"/><path fill-rule="evenodd" d="M16 13.25a.75.75 0 0 1 .75.75v1.25L18 15.25a.75.75 0 0 1 0 1.5h-1.25V18a.75.75 0 0 1-1.5 0v-1.25H14a.75.75 0 0 1 0-1.5h1.25V14a.75.75 0 0 1 .75-.75z" fill="currentColor"/></svg></div>
-    <div class="nav-item" data-tab="salary"><svg viewBox="0 0 24 24" fill="none"><path d="M6.94 2C7.36 2 7.7 2.32 7.7 2.72v1.46c.67-.01 1.42-.01 2.26-.01h4.02c.84 0 1.59 0 2.26.01V2.72c0-.4.34-.72.75-.72s.75.32.75.72v1.53c1.45.11 2.4.38 3.09 1.05.7.67.98 1.58 1.1 2.97L22 9H2V8.28c.12-1.39.4-2.3 1.1-2.97.7-.67 1.64-.94 3.09-1.05V2.72c0-.4.34-.72.75-.72z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84 0-2.33-.02-3H2.01C2 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.34 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z" fill="currentColor"/><circle cx="17" cy="17" r="1" fill="currentColor"/><circle cx="17" cy="13" r="1" fill="currentColor"/><circle cx="12" cy="17" r="1" fill="currentColor"/><circle cx="12" cy="13" r="1" fill="currentColor"/><circle cx="7" cy="17" r="1" fill="currentColor"/><circle cx="7" cy="13" r="1" fill="currentColor"/></svg></div>
+    <div class="nav-item active" data-tab="schedule"><svg viewBox="0 0 24 24"><path d="M6.96 2C7.38 2 7.72 2.31 7.72 2.69v1.4c.67-.01 1.42-.01 2.27-.01h4.03c.85 0 1.6 0 2.27.01V2.69c0-.38.34-.69.76-.69s.75.31.75.69v1.46c1.45.11 2.4.37 3.1 1.01.7.64 1 1.51 1.12 2.84v1H2V8c.12-1.33.4-2.2 1.1-2.84.7-.64 1.66-.9 3.1-1.01V2.69c0-.38.34-.69.76-.69z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84-.01-2.33-.03-3H2.01C1.99 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.35 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z"/><path fill-rule="evenodd" d="M14 12.25c-.97 0-1.75.78-1.75 1.75v2c0 .97.78 1.75 1.75 1.75s1.75-.78 1.75-1.75v-2c0-.97-.78-1.75-1.75-1.75z"/></svg></div>
+    <div class="nav-item" data-tab="records"><svg viewBox="0 0 24 24"><path d="M6.96 2C7.38 2 7.72 2.31 7.72 2.69v1.4c.67-.01 1.42-.01 2.27-.01h4.03c.85 0 1.6 0 2.27.01V2.69c0-.38.34-.69.76-.69s.75.31.75.69v1.46c1.45.11 2.4.37 3.1 1.01.7.64 1 1.51 1.12 2.84v1H2V8c.12-1.33.4-2.2 1.1-2.84.7-.64 1.66-.9 3.1-1.01V2.69c0-.38.34-.69.76-.69z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84-.01-2.33-.03-3H2.01C1.99 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.35 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z"/><path fill-rule="evenodd" d="M16 13.25a.75.75 0 0 1 .75.75v1.25L18 15.25a.75.75 0 0 1 0 1.5h-1.25V18a.75.75 0 0 1-1.5 0v-1.25H14a.75.75 0 0 1 0-1.5h1.25V14a.75.75 0 0 1 .75-.75z"/></svg></div>
+    <div class="nav-item" data-tab="salary"><svg viewBox="0 0 24 24"><path d="M6.94 2C7.36 2 7.7 2.32 7.7 2.72v1.46c.67-.01 1.42-.01 2.26-.01h4.02c.84 0 1.59 0 2.26.01V2.72c0-.4.34-.72.75-.72s.75.32.75.72v1.53c1.45.11 2.4.38 3.09 1.05.7.67.98 1.58 1.1 2.97L22 9H2V8.28c.12-1.39.4-2.3 1.1-2.97.7-.67 1.64-.94 3.09-1.05V2.72c0-.4.34-.72.75-.72z" fill="currentColor"/><path opacity=".5" d="M22 14v-2c0-.84 0-2.33-.02-3H2.01C2 9.67 2 11.16 2 12v2c0 3.77 0 5.66 1.17 6.83C4.34 22 6.23 22 10 22h4c3.77 0 5.66 0 6.83-1.17C22 19.66 22 17.77 22 14z"/><circle cx="17" cy="17" r="1"/><circle cx="17" cy="13" r="1"/><circle cx="12" cy="17" r="1"/><circle cx="12" cy="13" r="1"/><circle cx="7" cy="17" r="1"/><circle cx="7" cy="13" r="1"/></svg></div>
 </nav>
 
-<!-- ========== 班次选择弹窗 ========== -->
 <div id="shiftModal" class="modal-overlay">
     <div class="option-group">
         <button class="shift-option work" data-shift="work"><span class="shift-icon">☀️</span><span class="shift-label">白 班</span><span class="shift-sub">日间出勤</span></button>
@@ -342,18 +221,21 @@
 
 <script>
 (function(){
-    /* ========== 数据存储键名 ========== */
     const STORAGE_PREFIX = 'workhours_v35_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
     let year, month, data = [], activeTab = 'schedule';
     let editingRow = null, pendingRow = null;
 
-    const SALARY_STORAGE = 'salary_config_v25';
-    let salaryConfig = { baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0, insuranceDeduction:0, personalTax:0, manualOvertimePay:null };
+    const SALARY_STORAGE = 'salary_config_v26';
+    let salaryConfig = {
+        baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0,
+        insuranceDeduction:0, personalTax:0, manualOvertimePay:null,
+        rentDeduction:0, mealFeeDeduction:0, highTempAllowance:0, seniorityAllowance:0,
+        nightAllowanceManual:null
+    };
     let fullWorkHours = 160;
-    const FULL_HOURS_KEY = 'full_work_hours_v16';
+    const FULL_HOURS_KEY = 'full_work_hours_v17';
 
-    /* ========== DOM 缓存 ========== */
     const dom = {
         scheduleStats: document.getElementById('scheduleStatsContainer'),
         scheduleCalendar: document.getElementById('scheduleCalendarContainer'),
@@ -365,13 +247,11 @@
         shiftModal: document.getElementById('shiftModal'),
     };
 
-    /* ========== 工具函数 ========== */
     function showToast(msg) { dom.toastMsg.textContent = msg; dom.toastMsg.classList.add('show'); clearTimeout(dom.toastMsg._timeout); dom.toastMsg._timeout = setTimeout(() => dom.toastMsg.classList.remove('show'), 1800); }
     function getDays(y,m) { return new Date(y, m, 0).getDate(); }
     function getFirstDay(y,m) { return new Date(y, m-1, 1).getDay(); }
     function getStorageKey() { return STORAGE_PREFIX + year + '_' + month; }
 
-    /* ========== 数据加载与保存 ========== */
     function loadData() {
         const raw = localStorage.getItem(getStorageKey());
         const days = getDays(year, month);
@@ -380,25 +260,28 @@
         while(data.length > days) data.pop();
     }
     function saveData() { localStorage.setItem(getStorageKey(), JSON.stringify({ year, month, rows: data })); }
-    function loadSalaryConfig() { try { const saved = localStorage.getItem(SALARY_STORAGE); if(saved) salaryConfig = JSON.parse(saved); } catch(e){} salaryConfig = { baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0, insuranceDeduction:0, personalTax:0, manualOvertimePay:null, ...salaryConfig }; }
+    function loadSalaryConfig() {
+        try { const saved = localStorage.getItem(SALARY_STORAGE); if(saved) salaryConfig = JSON.parse(saved); } catch(e){}
+        salaryConfig = { baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0, insuranceDeduction:0, personalTax:0, manualOvertimePay:null, rentDeduction:0, mealFeeDeduction:0, highTempAllowance:0, seniorityAllowance:0, nightAllowanceManual:null, ...salaryConfig };
+    }
     function saveSalaryConfig() { localStorage.setItem(SALARY_STORAGE, JSON.stringify(salaryConfig)); }
     function loadFullHours() { try { const val = localStorage.getItem(FULL_HOURS_KEY); if(val !== null) fullWorkHours = parseInt(val); } catch(e){} if(isNaN(fullWorkHours)||fullWorkHours<0) fullWorkHours=160; }
     function saveFullHours() { localStorage.setItem(FULL_HOURS_KEY, fullWorkHours.toString()); }
 
-    /* ========== 工时计算 ========== */
     function computeWorkStats() {
         let totalHours = 0, overtimeHours = 0, holidayOvertime = 0;
         for(let i=0;i<data.length;i++) {
             const day = data[i];
             const normal = day.normal||0, overtime = day.overtime||0;
-            totalHours += normal;                                  // 所有平时工时计入总工时
-            if(day.shift === 'holiday') { holidayOvertime += overtime; }  // 法定假日加班单独统计
-            else { totalHours += overtime; overtimeHours += overtime; }    // 非法定假日加班计入总工时和延时加班
+            totalHours += normal;
+            if(day.shift === 'holiday') { holidayOvertime += overtime; }
+            else { totalHours += overtime; overtimeHours += overtime; }
         }
         return { totalHours, overtimeHours, holidayOvertime };
     }
 
     function getNightShiftCount() { let count=0; for(let i=0;i<data.length;i++) if(data[i].shift==='night') count++; return count; }
+
     function computeOvertimeAndSalary() {
         let nonHolidayTotal = 0, holidayOvertimeHours = 0;
         for(let i=0;i<data.length;i++) {
@@ -407,54 +290,55 @@
             nonHolidayTotal += (day.normal||0) + (day.overtime||0);
         }
         const overtimeHours = Math.max(0, nonHolidayTotal - fullWorkHours);
-        const hourRate = salaryConfig.baseSalary / 21.75 / 8;    // 小时工资率
-        const normalOvertimePay = hourRate * 1.5 * overtimeHours; // 延时加班费
-        const holidayOvertimePay = hourRate * 3 * holidayOvertimeHours; // 法定加班费
+        const hourRate = salaryConfig.baseSalary / 21.75 / 8;
+        const normalOvertimePay = hourRate * 1.5 * overtimeHours;
+        const holidayOvertimePay = hourRate * 3 * holidayOvertimeHours;
         const autoOvertimePay = normalOvertimePay + holidayOvertimePay;
         let finalOvertimePay = autoOvertimePay;
-        if(salaryConfig.manualOvertimePay !== null) finalOvertimePay = salaryConfig.manualOvertimePay; // 手动调整优先
+        if(salaryConfig.manualOvertimePay !== null) finalOvertimePay = salaryConfig.manualOvertimePay;
         return { overtimeHours, holidayOvertimeHours, normalOvertimePay, holidayOvertimePay, autoOvertimePay, finalOvertimePay, hourRate };
     }
 
     function computeSalary() {
         const overtimeRes = computeOvertimeAndSalary();
-        const overtimePay = overtimeRes.finalOvertimePay;
         const stats = computeWorkStats();
-        const mealAllowance = stats.totalHours * 1;                // 餐补：1元/小时
+        const mealAllowance = (stats.totalHours + stats.holidayOvertime) * 1;
         const nightCount = getNightShiftCount();
-        const nightAllowance = nightCount * 30;                   // 夜班补贴：30元/班
-        const gross = salaryConfig.baseSalary + salaryConfig.performance + salaryConfig.otherAllowance + mealAllowance + overtimePay + nightAllowance - salaryConfig.otherDeduction;
+        const autoNightAllowance = nightCount * 30;
+        const nightAllowance = salaryConfig.nightAllowanceManual !== null ? salaryConfig.nightAllowanceManual : autoNightAllowance;
+        const gross = salaryConfig.baseSalary + salaryConfig.performance + salaryConfig.otherAllowance
+            + mealAllowance + overtimeRes.finalOvertimePay + nightAllowance
+            + salaryConfig.highTempAllowance + salaryConfig.seniorityAllowance
+            - salaryConfig.otherDeduction - salaryConfig.rentDeduction - salaryConfig.mealFeeDeduction;
         const net = gross - salaryConfig.insuranceDeduction - salaryConfig.personalTax;
-        return { gross, net, mealAllowance, nightAllowance };
+        return { gross, net, mealAllowance, nightAllowance, autoNightAllowance, overtimeRes };
     }
 
-    /* ========== 排班页面渲染 ========== */
     function renderSchedule() {
         const stats = computeWorkStats();
-        const statsHtml = `<div class="stats-grid"><div class="stat-card"><div class="stat-label">总工时</div><div class="stat-number">${stats.totalHours.toFixed(1)}</div></div><div class="stat-card"><div class="stat-label">加班工时</div><div class="stat-number">${stats.overtimeHours.toFixed(1)}</div></div><div class="stat-card"><div class="stat-label">法定假日工时</div><div class="stat-number">${stats.holidayOvertime.toFixed(1)}</div></div><div class="stat-card"><div class="stat-label">满勤工时</div><input type="number" id="fullHoursInput" class="stat-number-input" value="${fullWorkHours}" step="8" min="0" inputmode="numeric" pattern="[0-9]*"></div></div>`;
+        const statsHtml = `<div class="stats-grid"><div class="stat-card"><div class="stat-label">总工时</div><div class="stat-number">${stats.totalHours.toFixed(1)}</div></div><div class="stat-card"><div class="stat-label">加班工时</div><div class="stat-number">${stats.overtimeHours.toFixed(1)}</div></div><div class="stat-card"><div class="stat-label">法定假日工时</div><div class="stat-number">${stats.holidayOvertime.toFixed(1)}</div></div><div class="stat-card"><div class="stat-label">满勤工时</div><input type="number" id="fullHoursInput" class="stat-number-input" value="${fullWorkHours}" step="8" min="0" inputmode="numeric"></div></div>`;
         const days = getDays(year, month);
         const first = getFirstDay(year, month);
         const today = new Date();
         const isCurr = (today.getFullYear()===year && today.getMonth()+1===month);
         const todayDate = today.getDate();
-        let calendarHtml = '<div class="schedule-card"><div class="calendar-week"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-grid">';
+        let calHtml = '<div class="schedule-card"><div class="calendar-week"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-grid">';
         let start = first===0 ? 6 : first-1;
-        for(let i=0;i<start;i++) calendarHtml += '<div class="cal-day empty"></div>';
+        for(let i=0;i<start;i++) calHtml += '<div class="cal-day empty"></div>';
         for(let d=1;d<=days;d++) {
             const row = data[d-1] || { shift:'' };
             let cls = 'cal-day';
             if(row.shift) cls += ' ' + row.shift;
             if(isCurr && d===todayDate) cls += ' today';
             const labelMap = { work:'白班', night:'夜班', rest:'休息', holiday:'法定' };
-            calendarHtml += `<div class="${cls}" onclick="window.app.openShift(${d-1})"><div class="day-number">${d}</div>${row.shift ? `<div class="day-label">${labelMap[row.shift]}</div>` : ''}</div>`;
+            calHtml += `<div class="${cls}" onclick="window.app.openShift(${d-1})"><div class="day-number">${d}</div>${row.shift ? `<div class="day-label">${labelMap[row.shift]}</div>` : ''}</div>`;
         }
-        calendarHtml += '</div></div>';
+        calHtml += '</div></div>';
         dom.scheduleStats.innerHTML = statsHtml;
-        dom.scheduleCalendar.innerHTML = calendarHtml;
+        dom.scheduleCalendar.innerHTML = calHtml;
         document.getElementById('fullHoursInput')?.addEventListener('change', function() { let val = parseFloat(this.value); if(isNaN(val)||val<0) val=160; fullWorkHours = Math.round(val); this.value = fullWorkHours; saveFullHours(); if(activeTab==='salary') renderSalaryPage(); renderSchedule(); });
     }
 
-    /* ========== 记录页面渲染（折角水印网格） ========== */
     function renderRecords() {
         const days = getDays(year, month);
         let html = '';
@@ -463,136 +347,89 @@
             const isEdit = (editingRow === i);
             html += `<div class="record-cell ${row.shift||'none'}${isEdit?' editing':''}" data-row="${i}">
                 <span class="cell-date">${i+1}</span>
-                <div class="cell-hours">
-                    <div class="cell-hour-item">
-                        <span class="cell-hour-label">平时</span>
-                        <span class="cell-hour-value">${(row.normal||0).toFixed(1)}</span>
-                    </div>
-                    <div class="cell-hour-item">
-                        <span class="cell-hour-label">加班</span>
-                        <span class="cell-hour-value">${(row.overtime||0).toFixed(1)}</span>
-                    </div>
-                </div>
-                <div class="edit-overlay">
-                    <!-- 数字键盘输入框 -->
-                    <input type="number" class="edit-normal" step="0.5" value="${row.normal}" inputmode="decimal" pattern="[0-9.]*" placeholder="平时">
-                    <input type="number" class="edit-overtime" step="0.5" value="${row.overtime}" inputmode="decimal" pattern="[0-9.]*" placeholder="加班">
-                    <button class="edit-done">✓</button>
-                </div>
+                <div class="cell-hours"><div class="cell-hour-item"><span class="cell-hour-label">平时</span><span class="cell-hour-value">${(row.normal||0).toFixed(1)}</span></div><div class="cell-hour-item"><span class="cell-hour-label">加班</span><span class="cell-hour-value">${(row.overtime||0).toFixed(1)}</span></div></div>
+                <div class="edit-overlay"><input type="number" class="edit-normal" step="0.5" value="${row.normal}" inputmode="decimal" placeholder="平时"><input type="number" class="edit-overtime" step="0.5" value="${row.overtime}" inputmode="decimal" placeholder="加班"><button class="edit-done">✓</button></div>
             </div>`;
         }
         dom.recordsList.innerHTML = html;
-        /* 绑定事件 */
         document.querySelectorAll('#recordsListContainer .record-cell').forEach(cell => {
             cell.addEventListener('click', function(e) {
                 if(e.target.classList.contains('edit-done')) return;
                 const idx = parseInt(cell.dataset.row);
                 if(editingRow === idx) return;
                 if(editingRow !== null) finishEditing(editingRow);
-                editingRow = idx;
-                renderRecords();
-                /* 默认聚焦加班工时输入框 */
+                editingRow = idx; renderRecords();
                 setTimeout(() => { const inp = document.querySelector('.record-cell.editing .edit-overtime'); if(inp) inp.focus(); }, 100);
             });
             const doneBtn = cell.querySelector('.edit-done');
-            if(doneBtn) {
-                doneBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const idx = parseInt(cell.dataset.row);
-                    const normal = parseFloat(cell.querySelector('.edit-normal')?.value) || 0;
-                    const overtime = parseFloat(cell.querySelector('.edit-overtime')?.value) || 0;
-                    data[idx].normal = Math.min(24, Math.max(0, normal));
-                    data[idx].overtime = Math.min(24, Math.max(0, overtime));
-                    saveData();
-                    editingRow = null;
-                    renderRecords();
-                    renderSchedule();
-                    if(activeTab==='salary') renderSalaryPage();
-                });
-            }
+            if(doneBtn) { doneBtn.addEventListener('click', function(e) { e.stopPropagation(); const idx = parseInt(cell.dataset.row); data[idx].normal = Math.min(24, Math.max(0, parseFloat(cell.querySelector('.edit-normal')?.value)||0)); data[idx].overtime = Math.min(24, Math.max(0, parseFloat(cell.querySelector('.edit-overtime')?.value)||0)); saveData(); editingRow = null; renderRecords(); renderSchedule(); if(activeTab==='salary') renderSalaryPage(); }); }
         });
     }
-
     function finishEditing(idx) {
         if(idx === null) return;
         const card = document.querySelector(`.record-cell[data-row="${idx}"]`);
-        if(card) {
-            data[idx].normal = Math.min(24, Math.max(0, parseFloat(card.querySelector('.edit-normal')?.value)||0));
-            data[idx].overtime = Math.min(24, Math.max(0, parseFloat(card.querySelector('.edit-overtime')?.value)||0));
-            saveData();
-        }
+        if(card) { data[idx].normal = Math.min(24, Math.max(0, parseFloat(card.querySelector('.edit-normal')?.value)||0)); data[idx].overtime = Math.min(24, Math.max(0, parseFloat(card.querySelector('.edit-overtime')?.value)||0)); saveData(); }
         editingRow = null; renderRecords(); renderSchedule(); if(activeTab==='salary') renderSalaryPage();
     }
 
-    /* ========== 薪资页面渲染 ========== */
     function renderSalaryPage() {
         const salary = computeSalary();
-        const overtimeRes = computeOvertimeAndSalary();
+        const oRes = salary.overtimeRes;
         const stats = computeWorkStats();
-        const mealAuto = stats.totalHours * 1;
-        const paramsHtml = `<div class="params-grid"><div class="param-card"><div class="param-label">底薪</div><input type="number" id="baseSalaryParam" class="param-value" value="${salaryConfig.baseSalary}" step="100" inputmode="decimal" pattern="[0-9.]*"></div><div class="param-card"><div class="param-label">绩效</div><input type="number" id="performanceParam" class="param-value" value="${salaryConfig.performance}" step="100" inputmode="decimal" pattern="[0-9.]*"></div><div class="param-card"><div class="param-label">其他扣款</div><input type="number" id="otherDeductionParam" class="param-value" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal" pattern="[0-9.]*"></div><div class="param-card"><div class="param-label">其它补贴</div><input type="number" id="otherAllowanceParam" class="param-value" value="${salaryConfig.otherAllowance}" step="50" inputmode="decimal" pattern="[0-9.]*"></div><div class="param-card"><div class="param-label">五险一金扣款</div><input type="number" id="insuranceParam" class="param-value" value="${salaryConfig.insuranceDeduction}" step="100" inputmode="decimal" pattern="[0-9.]*"></div><div class="param-card"><div class="param-label">个人所得税</div><input type="number" id="taxParam" class="param-value" value="${salaryConfig.personalTax}" step="100" inputmode="decimal" pattern="[0-9.]*"></div><div class="param-card"><div class="param-label">餐补(工时×1)</div><input type="number" class="param-value" value="${mealAuto.toFixed(2)}" readonly></div><div class="param-card"><div class="param-label">夜班补贴(30/班)</div><input type="number" class="param-value" value="${salary.nightAllowance.toFixed(2)}" readonly></div></div>`;
-        const overtimeHtml = `<div class="overtime-row"><div class="overtime-card"><div class="overtime-title">延时加班费</div><div class="overtime-amount">${overtimeRes.normalOvertimePay.toFixed(2)} 元</div></div><div class="overtime-card"><div class="overtime-title">法假加班费</div><div class="overtime-amount">${overtimeRes.holidayOvertimePay.toFixed(2)} 元</div></div><div class="overtime-card"><div class="overtime-title">手动调整加班费</div><input type="number" id="manualOvertimeInput" class="overtime-input" value="${salaryConfig.manualOvertimePay!==null?salaryConfig.manualOvertimePay:''}" step="10" placeholder="自动" inputmode="decimal" pattern="[0-9.]*"><button id="resetOvertimeBtn" class="btn-small" style="margin-top:4px;">恢复自动</button></div></div>`;
-        const resultHtml = `<div class="salary-result"><div class="result-line"><span class="result-label">应发工资</span><span class="result-value">${salary.gross.toFixed(2)} 元</span></div><div class="result-line" style="margin-top:8px;"><span class="result-label">实发工资</span><span class="result-value" style="color:var(--accent);">${salary.net.toFixed(2)} 元</span></div></div>`;
+        const mealAuto = salary.mealAllowance;
+        const autoNight = salary.autoNightAllowance;
+        const nightDisplay = salaryConfig.nightAllowanceManual !== null ? salaryConfig.nightAllowanceManual : autoNight;
+        const paramsHtml = `<div class="params-grid">
+            <div class="param-card income"><div class="param-label">💰底薪</div><input type="number" id="baseSalaryParam" class="param-value" value="${salaryConfig.baseSalary}" step="100" inputmode="decimal"></div>
+            <div class="param-card income"><div class="param-label">📈绩效</div><input type="number" id="performanceParam" class="param-value" value="${salaryConfig.performance}" step="100" inputmode="decimal"></div>
+            <div class="param-card deduction"><div class="param-label">📉其他扣款</div><input type="number" id="otherDeductionParam" class="param-value" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal"></div>
+            <div class="param-card income"><div class="param-label">🎁其它补贴</div><input type="number" id="otherAllowanceParam" class="param-value" value="${salaryConfig.otherAllowance}" step="50" inputmode="decimal"></div>
+            <div class="param-card deduction"><div class="param-label">🧾五险一金</div><input type="number" id="insuranceParam" class="param-value" value="${salaryConfig.insuranceDeduction}" step="100" inputmode="decimal"></div>
+            <div class="param-card deduction"><div class="param-label">🧾个税</div><input type="number" id="taxParam" class="param-value" value="${salaryConfig.personalTax}" step="100" inputmode="decimal"></div>
+            <div class="param-card income"><div class="param-label">🍽️餐补</div><input type="number" id="mealDisplay" class="param-value" value="${mealAuto.toFixed(2)}" readonly></div>
+            <div class="param-card income"><div class="param-label">🌙夜班补贴</div><input type="number" id="nightAllowanceInput" class="param-value" value="${nightDisplay.toFixed(2)}" step="10" inputmode="decimal"></div>
+            <div class="param-card deduction"><div class="param-label">🏠房租水电</div><input type="number" id="rentDeductionParam" class="param-value" value="${salaryConfig.rentDeduction}" step="50" inputmode="decimal"></div>
+            <div class="param-card deduction"><div class="param-label">🍴用餐费</div><input type="number" id="mealFeeParam" class="param-value" value="${salaryConfig.mealFeeDeduction}" step="50" inputmode="decimal"></div>
+            <div class="param-card income"><div class="param-label">☀️高温补贴</div><input type="number" id="highTempParam" class="param-value" value="${salaryConfig.highTempAllowance}" step="50" inputmode="decimal"></div>
+            <div class="param-card income"><div class="param-label">⏳工龄补贴</div><input type="number" id="seniorityParam" class="param-value" value="${salaryConfig.seniorityAllowance}" step="50" inputmode="decimal"></div>
+        </div>`;
+        const overtimeHtml = `<div class="overtime-row"><div class="overtime-card"><div class="overtime-title">延时加班费</div><div class="overtime-amount">${oRes.normalOvertimePay.toFixed(2)} 元</div></div><div class="overtime-card"><div class="overtime-title">法假加班费</div><div class="overtime-amount">${oRes.holidayOvertimePay.toFixed(2)} 元</div></div><div class="overtime-card"><div class="overtime-title">手动调整加班费</div><input type="number" id="manualOvertimeInput" class="overtime-input" value="${salaryConfig.manualOvertimePay!==null?salaryConfig.manualOvertimePay:''}" step="10" placeholder="自动" inputmode="decimal"><button id="resetOvertimeBtn" class="btn-small" style="margin-top:4px;">恢复自动</button></div></div>`;
+        const resultHtml = `<div class="salary-result"><div class="result-line"><span class="result-label">💵应发工资</span><span class="result-value">${salary.gross.toFixed(2)} 元</span></div><div class="result-line" style="margin-top:8px;"><span class="result-label">💶实发工资</span><span class="result-value" style="color:var(--accent);">${salary.net.toFixed(2)} 元</span></div></div>`;
         dom.salaryParams.innerHTML = paramsHtml;
         dom.salaryOvertime.innerHTML = overtimeHtml;
         dom.salaryResult.innerHTML = resultHtml;
 
-        function bind(id, setter) { const el = document.getElementById(id); if(el) el.addEventListener('change', () => { setter(parseFloat(el.value)||0); saveSalaryConfig(); renderSalaryPage(); }); }
+        const bind = (id, setter) => { const el = document.getElementById(id); if(el) el.addEventListener('input', () => { setter(parseFloat(el.value)||0); saveSalaryConfig(); renderSalaryPage(); }); };
         bind('baseSalaryParam', v => salaryConfig.baseSalary = v);
         bind('performanceParam', v => salaryConfig.performance = v);
         bind('otherDeductionParam', v => salaryConfig.otherDeduction = v);
         bind('otherAllowanceParam', v => salaryConfig.otherAllowance = v);
         bind('insuranceParam', v => salaryConfig.insuranceDeduction = v);
         bind('taxParam', v => salaryConfig.personalTax = v);
-        document.getElementById('manualOvertimeInput')?.addEventListener('change', function() { const val = this.value.trim(); salaryConfig.manualOvertimePay = val==='' ? null : parseFloat(val); saveSalaryConfig(); renderSalaryPage(); });
+        bind('rentDeductionParam', v => salaryConfig.rentDeduction = v);
+        bind('mealFeeParam', v => salaryConfig.mealFeeDeduction = v);
+        bind('highTempParam', v => salaryConfig.highTempAllowance = v);
+        bind('seniorityParam', v => salaryConfig.seniorityAllowance = v);
+        const nightInput = document.getElementById('nightAllowanceInput');
+        if(nightInput) { nightInput.addEventListener('input', function() { const val = this.value.trim(); salaryConfig.nightAllowanceManual = val==='' ? null : parseFloat(val); saveSalaryConfig(); renderSalaryPage(); }); }
+        const manualInput = document.getElementById('manualOvertimeInput');
+        if(manualInput) { manualInput.addEventListener('input', function() { const val = this.value.trim(); salaryConfig.manualOvertimePay = val==='' ? null : parseFloat(val); saveSalaryConfig(); renderSalaryPage(); }); }
         document.getElementById('resetOvertimeBtn')?.addEventListener('click', () => { salaryConfig.manualOvertimePay = null; saveSalaryConfig(); renderSalaryPage(); });
     }
 
-    /* ========== 标签页切换 ========== */
-    function switchTab(tab) {
-        if(activeTab === tab) return;
-        if(editingRow !== null) finishEditing(editingRow);
-        activeTab = tab;
-        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-        document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.tab === tab));
-        if(tab === 'records') renderRecords();
-        if(tab === 'salary') renderSalaryPage();
-    }
-
-    /* ========== 月份切换 ========== */
-    function changeMonth(delta) {
-        let newMonth = month + delta, newYear = year;
-        if(newMonth < 1) { newMonth = 12; newYear--; }
-        if(newMonth > 12) { newMonth = 1; newYear++; }
-        if(newYear < 2020 || newYear > 2099) return;
-        if(editingRow !== null) finishEditing(editingRow);
-        year = newYear; month = newMonth;
-        loadData(); renderAll();
-    }
-
-    /* ========== 班次选择弹窗 ========== */
+    function switchTab(tab) { if(activeTab === tab) return; if(editingRow !== null) finishEditing(editingRow); activeTab = tab; document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active')); document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active'); document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.tab === tab)); if(tab === 'records') renderRecords(); if(tab === 'salary') renderSalaryPage(); }
+    function changeMonth(delta) { let newMonth = month + delta, newYear = year; if(newMonth < 1) { newMonth = 12; newYear--; } if(newMonth > 12) { newMonth = 1; newYear++; } if(newYear < 2020 || newYear > 2099) return; if(editingRow !== null) finishEditing(editingRow); year = newYear; month = newMonth; loadData(); renderAll(); }
     function openShiftPicker(rowIdx) { pendingRow = rowIdx; dom.shiftModal.classList.add('show'); }
-    function closeShiftPicker() { dom.shiftModal.classList.remove('show'); pendingRow = null; }
-    function applyShift(shift) {
-        if(pendingRow !== null) {
-            const def = (shift==='work'||shift==='night') ? { normal:DEF_NORMAL, overtime:DEF_OVERTIME } : { normal:0, overtime:0 };
-            data[pendingRow].shift = shift; data[pendingRow].normal = def.normal; data[pendingRow].overtime = def.overtime;
-            saveData(); renderSchedule(); renderRecords(); if(activeTab==='salary') renderSalaryPage();
-        }
-        closeShiftPicker();
-    }
-
+    function closeShiftPicker() { dom.shiftModal.classList.remove('show'); }
+    function applyShift(shift) { if(pendingRow !== null) { const def = (shift==='work'||shift==='night') ? { normal:DEF_NORMAL, overtime:DEF_OVERTIME } : { normal:0, overtime:0 }; data[pendingRow].shift = shift; data[pendingRow].normal = def.normal; data[pendingRow].overtime = def.overtime; saveData(); renderSchedule(); renderRecords(); if(activeTab==='salary') renderSalaryPage(); } closeShiftPicker(); }
     function renderAll() { renderSchedule(); renderRecords(); if(activeTab==='salary') renderSalaryPage(); }
 
-    /* ========== 全局事件绑定 ========== */
     document.querySelectorAll('#shiftModal .shift-option').forEach(btn => btn.addEventListener('click', () => applyShift(btn.dataset.shift)));
     document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchTab(item.dataset.tab)));
     document.getElementById('prevMonthBtn').addEventListener('click', () => changeMonth(-1));
     document.getElementById('nextMonthBtn').addEventListener('click', () => changeMonth(1));
     dom.shiftModal.addEventListener('click', (e) => { if(e.target === dom.shiftModal) closeShiftPicker(); });
 
-    /* ========== 初始化 ========== */
     const now = new Date(); year = now.getFullYear(); month = now.getMonth()+1;
     loadData(); loadSalaryConfig(); loadFullHours(); renderAll(); switchTab('schedule');
     window.app = { openShift: openShiftPicker };
