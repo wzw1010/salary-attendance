@@ -6,15 +6,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="考勤薪资">
-    <!-- 动态主题色：浅色模式为健康橙，深色模式为纯黑 -->
     <meta name="theme-color" content="#FF9500" id="themeColorMeta">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-512.png">
     <title>考勤·薪资预算</title>
     <style>
-        /* ========== 全局变量 ========== */
         :root {
-            /* 深色模式背景与文字 */
             --bg-primary: #000000;
             --bg-card: rgba(255, 255, 255, 0.06);
             --bg-card-solid: #1c1c1e;
@@ -24,13 +21,11 @@
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.6);
             --text-tertiary: rgba(255, 255, 255, 0.4);
-            /* 卡片专属配色 (健康App风格) */
-            --color-hours: #34c759;      /* 工时：绿色 */
-            --color-overtime: #5ac8fa;    /* 加班费：浅蓝 */
-            --color-salary: #F0B90B;      /* 薪资：金色 */
+            --color-hours: #34c759;
+            --color-overtime: #5ac8fa;
+            --color-salary: #F0B90B;
             --accent: #F0B90B;
             --accent-dim: rgba(240, 185, 11, 0.25);
-            /* 班次日历背景 */
             --color-work: #7aa9ff;
             --color-night: #b794f4;
             --color-rest: #9ca3af;
@@ -39,7 +34,6 @@
             --bg-night: rgba(183, 148, 244, 0.25);
             --bg-rest: rgba(156, 163, 175, 0.25);
             --bg-holiday: rgba(251, 191, 36, 0.25);
-            /* 圆角与间距 */
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 20px;
@@ -48,21 +42,16 @@
             --space-sm: 10px;
             --space-md: 16px;
             --space-lg: 24px;
-            /* 字体层级 */
             --font-caption: 12px;
             --font-body: 16px;
             --font-title: 20px;
             --font-large: 34px;
-            /* 安全区与阴影 */
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
             --shadow: 0 4px 12px rgba(0,0,0,0.4);
             --header-height: 60px;
-            /* 深色模式顶部渐变 */
             --header-gradient: linear-gradient(to bottom, #000000 60%, transparent);
         }
-
-        /* 浅色模式覆盖 */
         @media (prefers-color-scheme: light) {
             :root {
                 --bg-primary: #f2f2f7;
@@ -75,12 +64,10 @@
                 --text-secondary: rgba(0, 0, 0, 0.55);
                 --text-tertiary: rgba(0, 0, 0, 0.35);
                 --shadow: 0 2px 10px rgba(0,0,0,0.06);
-                /* 浅色模式顶部渐变：从健康橙渐变到浅灰背景 */
                 --header-gradient: linear-gradient(to bottom, #FF9500 20%, #f2f2f7 100%);
             }
         }
 
-        /* ========== 基础重置 ========== */
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         html { height:100%; }
         body {
@@ -91,51 +78,27 @@
             -webkit-font-smoothing: antialiased;
             transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
-            /* 头部高度 + 安全区 + 额外呼吸空间 */
             padding-top: calc(var(--header-height) + var(--safe-top) + 8px);
             padding-bottom: calc(12px + var(--safe-bottom));
         }
-        .app {
-            max-width: 480px;
-            margin:0 auto;
-            padding:0 var(--space-md);
-        }
+        .app { max-width: 480px; margin:0 auto; padding:0 var(--space-md); }
 
-        /* ========== 头部导航 (健康App风格渐变) ========== */
         .nav-header {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            z-index: 10;
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; z-index: 10;
             padding: calc(var(--safe-top) + 10px) var(--space-md) 12px;
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
+            display: flex; align-items: center; gap: var(--space-sm);
             background: var(--header-gradient);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             min-height: var(--header-height);
         }
         .header-title {
-            font-weight: 700;
-            font-size: var(--font-title);
-            color: var(--text-primary);
-            white-space: nowrap;
-            margin-right: auto;
-            margin-left: 0.3em;
+            font-weight: 700; font-size: var(--font-title); color: var(--text-primary);
+            white-space: nowrap; margin-right: auto; margin-left: 0.3em;
         }
-        .month-control {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-shrink: 0;
-        }
+        .month-control { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
         .month-arrow {
-            width:32px; height:32px;
-            display: flex; align-items:center; justify-content:center;
+            width:32px; height:32px; display: flex; align-items:center; justify-content:center;
             background: var(--bg-input); border-radius:var(--radius-full);
             cursor:pointer; font-size:14px; color:var(--text-secondary); border:none;
             transition:background 0.2s;
@@ -143,28 +106,23 @@
         .month-arrow:active { background: rgba(128,128,128,0.2); }
         .month-indicator {
             width:28px; height:28px; border-radius:var(--radius-full);
-            background: var(--bg-input);
-            display:flex; align-items:center; justify-content:center;
+            background: var(--bg-input); display:flex; align-items:center; justify-content:center;
             font-size:11px; font-weight:600; color: var(--text-secondary);
             pointer-events:none;
         }
 
-        /* ========== 内容滚动区 ========== */
         .scroll-content { padding-top: var(--space-sm); }
 
-        /* ========== 可折叠卡片 (工时、加班费、薪资) ========== */
         .section {
-            background: var(--bg-card);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            background: var(--bg-card); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border:1px solid var(--border-card); border-radius:var(--radius-md);
-            margin-bottom: 20px; /* 统一加大卡片间距 */
-            overflow:hidden;
-            box-shadow: var(--shadow);
+            margin-bottom: 16px; overflow:hidden; box-shadow: var(--shadow);
         }
+        #salarySection { margin-bottom: 33.3px; }
+
         .section-header {
             display:flex; align-items:center; gap:var(--space-sm);
-            padding: var(--space-md); cursor:pointer;
-            transition: background 0.2s;
+            padding: var(--space-md); cursor:pointer; transition: background 0.2s;
         }
         .section-header:active { background: var(--bg-input); }
         .section-header .header-icon {
@@ -173,12 +131,10 @@
         }
         .section-header .header-label {
             font-size: var(--font-caption); color: var(--text-secondary);
-            font-weight:600; text-transform:uppercase; letter-spacing:0.3px;
-            flex:1;
+            font-weight:600; text-transform:uppercase; letter-spacing:0.3px; flex:1;
         }
         .section-header .header-value {
-            font-size: var(--font-body); font-weight:600; color: var(--text-primary);
-            margin-right:4px;
+            font-size: var(--font-body); font-weight:600; color: var(--text-primary); margin-right:4px;
         }
         .section-header .chevron {
             width:16px; height:16px; stroke: var(--text-tertiary); fill:none; stroke-width:2;
@@ -189,11 +145,9 @@
         .section-body { display:none; padding: 0 var(--space-md) var(--space-md); }
         .section.expanded .section-body { display:block; }
 
-        /* 主卡片头部 (工时/加班费/薪资) */
         .stat-header {
             display:flex; align-items:center; gap:var(--space-sm);
-            padding: var(--space-md); cursor:pointer;
-            transition: background 0.2s;
+            padding: var(--space-md); cursor:pointer; transition: background 0.2s;
         }
         .stat-header:active { background: var(--bg-input); }
         .stat-left { display:flex; flex-direction:column; gap:2px; flex:1; }
@@ -205,13 +159,11 @@
         .progress-ring circle { fill:none; stroke-width:5; stroke-linecap:round; }
         .ring-bg { stroke: rgba(128,128,128,0.15); }
 
-        /* 各卡片数字颜色 */
         #workHoursSection .stat-value { color: var(--color-hours); }
         #workHoursSection .ring-fill { stroke: var(--color-hours); }
         #overtimePaySection .stat-value { color: var(--color-overtime); }
         #salarySection .stat-value { color: var(--color-salary); }
 
-        /* 加班费展开行 */
         .overtime-row {
             display:flex; justify-content:space-between; align-items:center;
             padding:10px 0; border-bottom:1px solid var(--border-card);
@@ -222,20 +174,12 @@
         .overtime-label svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:1.5; }
         .overtime-value { font-weight:600; color: var(--text-primary); }
 
-        /* 手动更正行 (输入框高度36px) */
-        .manual-row {
-            display:flex; align-items:center; gap:8px; padding-top:8px;
-        }
-        .manual-row .input-field {
-            height: 36px;
-            font-size: var(--font-body);
-        }
+        .manual-row { display:flex; align-items:center; gap:8px; padding-top:8px; }
+        .manual-row .input-field { height: 36px; font-size: var(--font-body); }
 
-        /* 工时详情行 */
         .detail-row {
             display:flex; align-items:center; justify-content:space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-card);
+            padding: 10px 0; border-bottom: 1px solid var(--border-card);
             font-size: var(--font-caption);
         }
         .detail-row:last-child { border-bottom:none; }
@@ -244,33 +188,20 @@
         .detail-value { font-weight:600; color: var(--text-primary); }
         .editable { color: var(--color-hours); cursor:pointer; text-decoration:underline; text-underline-offset:2px; }
 
-        /* 薪资宫格 */
-        .salary-grid {
-            display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm);
-            padding: var(--space-sm) 0;
-        }
+        .salary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm); padding: var(--space-sm) 0; }
         .salary-item {
             background: var(--bg-input); border-radius:var(--radius-sm);
             padding: var(--space-sm); text-align:center;
             display:flex; flex-direction:column; gap:4px;
         }
-        .salary-item .item-label {
-            font-size:var(--font-caption); color:var(--text-secondary);
-            font-weight:500;
-        }
+        .salary-item .item-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:500; }
         .salary-item .item-input {
             background:transparent; border:none; color:var(--text-primary);
             font-size:var(--font-body); font-weight:600; text-align:center;
             width:100%; outline:none; font-family:inherit;
         }
 
-        /* ========== 日历 (无星期标题，无外层卡片) ========== */
-        .calendar-grid {
-            display:grid; grid-template-columns:repeat(7,1fr);
-            gap:5px;
-            /* 额外呼吸空间，底部与下方内容分离 */
-            margin-bottom: var(--space-md);
-        }
+        .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom: var(--space-md); }
         .cal-day {
             aspect-ratio:1/1; background:var(--bg-card); border-radius:var(--radius-sm);
             display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -287,7 +218,6 @@
         .day-number { font-size:var(--font-body); font-weight:600; }
         .day-label { font-size:9px; font-weight:600; color:var(--text-secondary); margin-top:1px; }
 
-        /* ========== 编辑弹窗 (无日期，加班优先聚焦) ========== */
         .modal-overlay {
             position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -297,22 +227,21 @@
         .modal-content {
             width:85%; max-width:400px; background: var(--bg-card-solid);
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg); box-shadow: var(--shadow);
+            border-radius: var(--radius-lg); padding: var(--space-lg); box-shadow: var(--shadow);
             display:flex; flex-direction:column; gap:var(--space-md);
             transform: scale(0.9); transition:transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-card);
         }
         .modal-overlay.show .modal-content { transform: scale(1); }
-        .modal-shift-selector { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-sm); }
+        .modal-shift-selector { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-xs); }
         .shift-option-big {
-            background:var(--bg-input); border:1px solid var(--border-input); border-radius:var(--radius-md);
-            padding:var(--space-md) var(--space-sm); cursor:pointer;
-            display:flex; flex-direction:column; align-items:center; gap:6px;
+            background:var(--bg-input); border:1px solid var(--border-input); border-radius:var(--radius-sm);
+            padding: 8px 6px; cursor:pointer;
+            display:flex; flex-direction:column; align-items:center; gap:4px;
             color:var(--text-secondary); transition:all 0.2s;
         }
-        .shift-option-big svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.8; }
-        .shift-option-big .shift-text { font-size:var(--font-caption); font-weight:600; }
+        .shift-option-big svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; }
+        .shift-option-big .shift-text { font-size:10px; font-weight:600; }
         .shift-option-big.active { background:var(--accent); color:#000; border-color:var(--accent); }
         .modal-hours-row { display:flex; gap:8px; align-items:center; }
         .modal-hours-row .input-field { flex:1; }
@@ -321,17 +250,14 @@
             padding:12px 20px; font-weight:700; font-size:var(--font-body); cursor:pointer;
         }
 
-        /* 通用输入框 */
         .input-field {
             background:var(--bg-input); border:1px solid var(--border-input); border-radius:var(--radius-sm);
             padding:10px 12px; font-size:var(--font-body); font-weight:600; color:var(--text-primary);
             text-align:center; width:100%; font-family:inherit; outline:none;
-            transition:border-color 0.2s;
-            -webkit-appearance:none;
+            transition:border-color 0.2s; -webkit-appearance:none;
         }
         .input-field:focus { border-color: var(--accent); }
 
-        /* Toast 提示 */
         .toast-msg {
             position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
             background:var(--bg-card-solid); padding:10px 24px; border-radius:50px;
@@ -344,7 +270,6 @@
 </head>
 <body>
 <div class="app">
-    <!-- 头部导航：去掉图标，仅保留文字与月份切换 -->
     <div class="nav-header">
         <span class="header-title">考勤·薪资预算</span>
         <div class="month-control">
@@ -354,13 +279,11 @@
         </div>
     </div>
 
-    <!-- 动态渲染区域 -->
     <div class="scroll-content" id="scrollContent">
         <div id="cardsWrapper"></div>
     </div>
 </div>
 
-<!-- 编辑弹窗 (无日期标题，加班工时输入框在前) -->
 <div class="modal-overlay" id="editModalOverlay">
     <div class="modal-content">
         <div class="modal-shift-selector" id="modalShiftSelector">
@@ -382,8 +305,8 @@
             </button>
         </div>
         <div class="modal-hours-row">
+            <input type="number" class="input-field" id="modalNormal" step="0.5" placeholder="正常工时" inputmode="decimal">
             <input type="number" class="input-field" id="modalOvertime" step="0.5" placeholder="加班工时" inputmode="decimal">
-            <input type="number" class="input-field" id="modalNormal" step="0.5" placeholder="平时工时" inputmode="decimal">
         </div>
         <button class="btn-save" id="modalSaveBtn">保存</button>
     </div>
@@ -391,24 +314,15 @@
 <div id="toastMsg" class="toast-msg"></div>
 
 <script>
-/**
- * 考勤薪资预算 - 单页应用
- * 数据存储于 localStorage，每月独立
- * 支持深色/浅色模式，健康App风格渐变头部
- */
 (function(){
-    // ---------- 常量定义 ----------
-    const STORAGE_PREFIX = 'wh_v49_';        // 月度数据 key 前缀
-    const DEF_NORMAL = 8, DEF_OVERTIME = 4; // 默认班次工时
-    const SALARY_STORAGE = 'sc_v40';        // 薪资配置 key
-    const FULL_HOURS_KEY = 'fh_v31';        // 满勤工时 key
+    const STORAGE_PREFIX = 'wh_v53_';
+    const DEF_NORMAL = 8, DEF_OVERTIME = 4;
+    const SALARY_STORAGE = 'sc_v44';
+    const FULL_HOURS_KEY = 'fh_v35';
 
-    let year, month;                    // 当前年月
-    let data = [];                      // 本月每日数据 [{shift, normal, overtime}, ...]
-    let selectedDay = null;            // 日历选中的日期索引 (0-based)
-    let fullWorkHours = 160;           // 当前满勤工时
-
-    // 薪资配置对象 (12个参数 + 手动调整项)
+    let year, month, data = [];
+    let selectedDay = null;
+    let fullWorkHours = 160;
     let salaryConfig = {
         baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0,
         insuranceDeduction:0, personalTax:0, manualOvertimePay:null,
@@ -416,71 +330,52 @@
         nightAllowanceManual:null
     };
 
-    // DOM 快捷访问
     const $ = id => document.getElementById(id);
     const cardsWrapper = $('cardsWrapper');
     const toastEl = $('toastMsg');
     const modalOverlay = $('editModalOverlay');
     const themeMeta = $('themeColorMeta');
 
-    // ---------- 通用工具 ----------
-    /** 显示轻提示 */
     function showToast(msg) {
         toastEl.textContent = msg; toastEl.classList.add('show');
         clearTimeout(toastEl._timeout);
         toastEl._timeout = setTimeout(() => toastEl.classList.remove('show'), 1800);
     }
-
-    /** 获取指定年月的天数 */
     const getDays = (y,m) => new Date(y,m,0).getDate();
-    /** 获取指定年月第一天是星期几 (0=周日) */
     const getFirstDay = (y,m) => new Date(y,m-1,1).getDay();
-    /** 拼接 localStorage key */
     const getKey = () => STORAGE_PREFIX + year + '_' + month;
 
-    // ---------- 数据加载/保存 ----------
     function loadData() {
         const raw = localStorage.getItem(getKey());
         const days = getDays(year, month);
         if(raw){ try{ const p=JSON.parse(raw); data=p.rows||[]; }catch(e){data=[];} }else data=[];
-        // 补全字段
         data.forEach(d => { d.shift = d.shift || ''; d.normal = d.normal || 0; d.overtime = d.overtime || 0; });
-        // 对齐当月天数
         while(data.length < days) data.push({shift:'', normal:0, overtime:0});
         if(data.length > days) data.length = days;
     }
-
     function saveData(){ localStorage.setItem(getKey(), JSON.stringify({year,month,rows:data})); }
-
     function loadSalaryConfig(){
         try{ const s = localStorage.getItem(SALARY_STORAGE); if(s) salaryConfig = JSON.parse(s); }catch(e){}
-        // 合并默认值
         salaryConfig = { baseSalary:0,performance:0,otherDeduction:0,otherAllowance:0,insuranceDeduction:0,personalTax:0,manualOvertimePay:null,rentDeduction:0,mealFeeDeduction:0,highTempAllowance:0,seniorityAllowance:0,nightAllowanceManual:null, ...salaryConfig };
     }
-
     function saveSalaryConfig(){ localStorage.setItem(SALARY_STORAGE, JSON.stringify(salaryConfig)); }
-
     function loadFullHours(){
         try{ const v = localStorage.getItem(FULL_HOURS_KEY); if(v !== null) fullWorkHours = parseInt(v); }catch(e){}
         if(isNaN(fullWorkHours) || fullWorkHours < 0) fullWorkHours = 160;
     }
-
     function saveFullHours(){ localStorage.setItem(FULL_HOURS_KEY, fullWorkHours.toString()); }
 
-    // ---------- 工时与薪资计算 (核心逻辑) ----------
-    /** 统计总工时、平时工时、加班工时、法定加班 */
     function computeWorkStats(){
-        let total=0, normalTotal=0, overtime=0, holidayOvertime=0;
+        let normalTotal = 0, overtimeTotal = 0, holidayTotal = 0;
         data.forEach(d => {
             const n = d.normal || 0, o = d.overtime || 0;
             normalTotal += n;
-            if(d.shift === 'holiday') holidayOvertime += o;
-            else { total += n + o; overtime += o; }
+            if(d.shift === 'holiday') holidayTotal += o;
+            else overtimeTotal += o;
         });
-        return { total, normalTotal, overtime, holidayOvertime };
+        return { total: normalTotal + overtimeTotal, normalTotal, overtimeTotal, holidayTotal };
     }
 
-    /** 计算加班费相关 (延时、法定、自动合计) */
     function computeOvertimeSalary(){
         let nonHoliday=0, holidayOvt=0;
         data.forEach(d => {
@@ -488,7 +383,7 @@
             nonHoliday += (d.normal||0) + (d.overtime||0);
         });
         const overtimeHrs = Math.max(0, nonHoliday - fullWorkHours);
-        const rate = salaryConfig.baseSalary / 21.75 / 8;  // 小时工资
+        const rate = salaryConfig.baseSalary / 21.75 / 8;
         const normalPay = rate * 1.5 * overtimeHrs;
         const holidayPay = rate * 3 * holidayOvt;
         const autoPay = normalPay + holidayPay;
@@ -501,11 +396,10 @@
         };
     }
 
-    /** 综合薪资计算 */
     function computeSalary(){
         const oRes = computeOvertimeSalary();
         const stats = computeWorkStats();
-        const meal = (stats.total + stats.holidayOvertime) * 1; // 餐补每小时1元
+        const meal = (stats.total + stats.holidayTotal) * 1;
         const nightCount = data.filter(d => d.shift === 'night').length;
         const autoNight = nightCount * 30;
         const nightAllow = salaryConfig.nightAllowanceManual !== null ? salaryConfig.nightAllowanceManual : autoNight;
@@ -517,33 +411,33 @@
         return { gross, net, meal, nightAllow, autoNight, overtimeRes: oRes };
     }
 
-    // ---------- 弹窗编辑操作 ----------
     function openModal(idx){
         selectedDay = idx;
         const row = data[idx] || { shift:'', normal:0, overtime:0 };
-        // 高亮当前班次按钮
         document.querySelectorAll('#modalShiftSelector .shift-option-big').forEach(b => b.classList.toggle('active', b.dataset.shift === row.shift));
-        $('modalOvertime').value = row.overtime;
         $('modalNormal').value = row.normal;
+        $('modalOvertime').value = row.overtime;
         modalOverlay.classList.add('show');
-        // 聚焦加班工时输入框
-        setTimeout(() => { $('modalOvertime').focus(); }, 400);
+        setTimeout(() => $('modalOvertime').focus(), 400);
     }
 
-    function closeModal(){ modalOverlay.classList.remove('show'); }
+    function closeModal(){
+        modalOverlay.classList.remove('show');
+        // 关键修复：关闭弹窗后将焦点移走，防止幽灵焦点残留
+        if(document.activeElement) document.activeElement.blur();
+        document.body.focus();
+    }
 
-    /** 保存当前编辑的工时 */
     function saveModal(){
         if(selectedDay === null) return;
-        data[selectedDay].overtime = Math.min(24, Math.max(0, parseFloat($('modalOvertime').value) || 0));
         data[selectedDay].normal = Math.min(24, Math.max(0, parseFloat($('modalNormal').value) || 0));
+        data[selectedDay].overtime = Math.min(24, Math.max(0, parseFloat($('modalOvertime').value) || 0));
         saveData();
         closeModal();
         renderAll();
         showToast('工时已保存');
     }
 
-    /** 在弹窗中切换班次 */
     function setShiftFromModal(shift){
         if(selectedDay === null) return;
         const def = (shift==='work'||shift==='night') ? {normal:DEF_NORMAL, overtime:DEF_OVERTIME} : {normal:0, overtime:0};
@@ -551,34 +445,29 @@
         data[selectedDay].normal = def.normal;
         data[selectedDay].overtime = def.overtime;
         document.querySelectorAll('#modalShiftSelector .shift-option-big').forEach(b => b.classList.toggle('active', b.dataset.shift === shift));
-        $('modalOvertime').value = def.overtime;
         $('modalNormal').value = def.normal;
+        $('modalOvertime').value = def.overtime;
         saveData();
-        renderAll(); // 立即反映班次颜色
+        renderAll();
         showToast(`已设为${ {work:'白班',night:'夜班',rest:'休息',holiday:'法定'}[shift] }`);
     }
 
-    // ---------- 主渲染 ----------
     function renderAll(){
-        // 确保选中日期合法
         if(selectedDay === null || selectedDay >= getDays(year, month)) selectedDay = new Date().getDate()-1;
         const stats = computeWorkStats();
         const pct = fullWorkHours > 0 ? Math.min(100, (stats.total / fullWorkHours)*100) : 0;
-        const circ = 2 * Math.PI * 18;          // 圆环周长 (半径18)
-        const off = circ - (pct/100)*circ;      // 进度偏移
+        const circ = 2 * Math.PI * 18;
+        const off = circ - (pct/100)*circ;
 
         const sal = computeSalary();
         const oRes = sal.overtimeRes;
+        $('monthIndicator').textContent = month;
 
-        $('monthIndicator').textContent = month; // 月份指示器
-
-        // 构建 HTML (卡片 + 无卡片日历)
         cardsWrapper.innerHTML = `
-            <!-- 工时卡片 -->
             <div class="section" id="workHoursSection">
                 <div class="stat-header" data-toggle="workHours">
                     <div class="stat-left">
-                        <span class="stat-label">总工时</span>
+                        <span class="stat-label">记薪工时</span>
                         <span class="stat-value">${stats.total.toFixed(1)}</span>
                         <span style="font-size:var(--font-caption); color:var(--text-tertiary);">满勤 ${fullWorkHours.toFixed(1)}</span>
                     </div>
@@ -592,31 +481,30 @@
                 </div>
                 <div class="section-body">
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" fill="none"/><line x1="8" y1="10" x2="16" y2="10" stroke="currentColor"/></svg>平时工时</span>
-                        <span class="detail-value">${stats.normalTotal.toFixed(1)} h</span>
+                        <span class="detail-label"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" fill="none"/><line x1="8" y1="10" x2="16" y2="10" stroke="currentColor"/></svg>正常工时</span>
+                        <span class="detail-value" id="normalTotalValue">${stats.normalTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>加班工时</span>
-                        <span class="detail-value">${stats.overtime.toFixed(1)} h</span>
+                        <span class="detail-value" id="overtimeTotalValue">${stats.overtimeTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定假日加班</span>
-                        <span class="detail-value">${stats.holidayOvertime.toFixed(1)} h</span>
+                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定节假日工时</span>
+                        <span class="detail-value" id="holidayTotalValue">${stats.holidayTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none"/><path d="M12 7v5l3 3" stroke="currentColor"/></svg>满勤工时</span>
+                        <span class="detail-label"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none"/></svg>满勤工时</span>
                         <span class="detail-value editable" id="fullHoursDisplay">${fullWorkHours.toFixed(1)} h</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 加班费卡片 -->
             <div class="section" id="overtimePaySection">
                 <div class="stat-header" data-toggle="overtimePay">
                     <div class="stat-left">
                         <span class="stat-label">加班薪资</span>
-                        <span class="stat-value">${oRes.autoOvertimePay.toFixed(1)}</span>
-                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);">延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}</span>
+                        <span class="stat-value" id="overtimePayTotal">${oRes.autoOvertimePay.toFixed(1)}</span>
+                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);" id="overtimePaySub">延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}</span>
                     </div>
                     <div class="stat-right">
                         <svg class="stat-icon" viewBox="0 0 24 24" stroke="var(--color-overtime)" fill="none" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -625,14 +513,12 @@
                 </div>
                 <div class="section-body">
                     <div class="overtime-row">
-                        <!-- 延时加班费图标改为时钟 -->
                         <span class="overtime-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none"/><polyline points="12 6 12 12 16 14" stroke="currentColor" fill="none"/></svg>延时加班费</span>
-                        <span class="overtime-value">${oRes.normalOvertimePay.toFixed(1)}</span>
+                        <span class="overtime-value" id="normalOvertimePayValue">${oRes.normalOvertimePay.toFixed(1)}</span>
                     </div>
                     <div class="overtime-row">
-                        <!-- 法定节假日加班费图标改为日历+星 -->
                         <span class="overtime-label"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" fill="none"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor"/><circle cx="12" cy="15" r="2" stroke="currentColor" fill="none"/></svg>法定节假日加班费</span>
-                        <span class="overtime-value">${oRes.holidayOvertimePay.toFixed(1)}</span>
+                        <span class="overtime-value" id="holidayOvertimePayValue">${oRes.holidayOvertimePay.toFixed(1)}</span>
                     </div>
                     <div class="manual-row">
                         <span style="font-size:var(--font-caption); color:var(--text-secondary);">手动更正</span>
@@ -642,13 +528,12 @@
                 </div>
             </div>
 
-            <!-- 薪资卡片 -->
             <div class="section" id="salarySection">
                 <div class="stat-header" data-toggle="salary">
                     <div class="stat-left">
-                        <span class="stat-label">实发工资</span>
-                        <span class="stat-value">${sal.net.toFixed(1)}</span>
-                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);">应发 ${sal.gross.toFixed(1)}</span>
+                        <span class="stat-label">实发薪资</span>
+                        <span class="stat-value" id="netSalaryValue">${sal.net.toFixed(1)}</span>
+                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);" id="grossSalarySub">应发 ${sal.gross.toFixed(1)}</span>
                     </div>
                     <div class="stat-right">
                         <svg class="stat-icon" viewBox="0 0 24 24" stroke="var(--color-salary)" fill="none" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -659,11 +544,11 @@
                     <div class="salary-grid">
                         <div class="salary-item"><span class="item-label">底薪</span><input class="item-input" id="baseSalary" value="${salaryConfig.baseSalary}" step="100" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">绩效</span><input class="item-input" id="performance" value="${salaryConfig.performance}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">其他扣款</span><input class="item-input" id="otherDeduction" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">其它扣款</span><input class="item-input" id="otherDeduction" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">其它补贴</span><input class="item-input" id="otherAllowance" value="${salaryConfig.otherAllowance}" step="50" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">五险一金</span><input class="item-input" id="insurance" value="${salaryConfig.insuranceDeduction}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">个税</span><input class="item-input" id="tax" value="${salaryConfig.personalTax}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">餐补 (自动)</span><input class="item-input" id="meal" value="${sal.meal.toFixed(1)}" readonly></div>
+                        <div class="salary-item"><span class="item-label">个人所得税</span><input class="item-input" id="tax" value="${salaryConfig.personalTax}" step="100" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">餐补(自动)</span><input class="item-input" id="meal" value="${sal.meal.toFixed(1)}" readonly></div>
                         <div class="salary-item"><span class="item-label">夜班补贴</span><input class="item-input" id="nightAllow" value="${sal.nightAllow.toFixed(1)}" step="10" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">房租水电</span><input class="item-input" id="rent" value="${salaryConfig.rentDeduction}" step="50" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">用餐费</span><input class="item-input" id="mealFee" value="${salaryConfig.mealFeeDeduction}" step="50" inputmode="decimal"></div>
@@ -673,18 +558,13 @@
                 </div>
             </div>
 
-            <!-- 日历 (无星期标题，无外层卡片) -->
             <div id="calendarArea" style="padding:0 var(--space-md);"></div>
         `;
 
-        // 渲染日历网格
         renderCalendar();
-
-        // 绑定事件
         bindEvents();
     }
 
-    /** 渲染日历网格 (无星期行，纯35个格子) */
     function renderCalendar(){
         const calArea = document.getElementById('calendarArea');
         const days = getDays(year,month), first = getFirstDay(year,month);
@@ -693,10 +573,8 @@
         const todayDate = today.getDate();
 
         let html = '<div class="calendar-grid">';
-        // 补齐前面的空白格子 (周一为第一天)
         let start = first===0?6:first-1;
         for(let i=0;i<start;i++) html += '<div class="cal-day empty"></div>';
-        // 日期格子
         const labels = {work:'白',night:'夜',rest:'休',holiday:'法'};
         for(let d=1; d<=days; d++){
             const row = data[d-1]||{};
@@ -710,52 +588,39 @@
         calArea.innerHTML = html;
     }
 
-    // ---------- 事件绑定 (使用事件委托优化性能) ----------
     function bindEvents(){
-        // 卡片折叠/展开 (委托给父容器)
-        cardsWrapper.addEventListener('click', (e) => {
+        // 改用 pointerdown 并阻止默认，彻底避免焦点干扰
+        cardsWrapper.addEventListener('pointerdown', (e) => {
             const toggleBtn = e.target.closest('[data-toggle]');
             if(!toggleBtn) return;
-            // 避免点到内部 input/button 导致折叠
             if(e.target.closest('input') || e.target.closest('button')) return;
+            e.preventDefault(); // 阻止焦点切换
             toggleBtn.closest('.section').classList.toggle('expanded');
         });
 
-        // 满勤工时编辑
         const fullEl = document.getElementById('fullHoursDisplay');
         fullEl?.addEventListener('click', (e)=>{
-            e.stopPropagation(); // 防止触发卡片折叠
+            e.stopPropagation();
             const val = prompt('输入本月满勤工时', fullWorkHours);
             if(val !== null){
                 const n = parseFloat(val);
-                if(!isNaN(n) && n>0){
-                    fullWorkHours = n;
-                    saveFullHours();
-                    renderAll();
-                }
+                if(!isNaN(n) && n>0){ fullWorkHours = n; saveFullHours(); renderAll(); }
             }
         });
 
-        // 日历点击 (事件委托到日历容器)
         const calendarArea = document.getElementById('calendarArea');
         calendarArea?.addEventListener('click', (e) => {
             const dayEl = e.target.closest('.cal-day:not(.empty)');
             if(!dayEl) return;
             const idx = parseInt(dayEl.dataset.day);
             openModal(idx);
-            // 移除旧选中，添加新选中
             document.querySelectorAll('.cal-day.selected').forEach(s => s.classList.remove('selected'));
             dayEl.classList.add('selected');
         });
 
-        // 薪资参数绑定 (change 事件，避免输入中断)
         const bindChange = (id, setter) => {
             const el = document.getElementById(id); if(!el) return;
-            el.addEventListener('change', ()=>{
-                setter(parseFloat(el.value)||0);
-                saveSalaryConfig();
-                updateSalaryDisplay();
-            });
+            el.addEventListener('change', ()=>{ setter(parseFloat(el.value)||0); saveSalaryConfig(); updateSalaryDisplay(); });
         };
         bindChange('baseSalary', v=>salaryConfig.baseSalary=v);
         bindChange('performance', v=>salaryConfig.performance=v);
@@ -768,68 +633,63 @@
         bindChange('highTemp', v=>salaryConfig.highTempAllowance=v);
         bindChange('seniority', v=>salaryConfig.seniorityAllowance=v);
 
-        // 夜班补贴手动输入
         const nightEl = document.getElementById('nightAllow');
         nightEl?.addEventListener('change', function(){
             const v = this.value.trim();
             salaryConfig.nightAllowanceManual = v==='' ? null : parseFloat(v);
-            saveSalaryConfig();
-            updateSalaryDisplay();
+            saveSalaryConfig(); updateSalaryDisplay();
         });
 
-        // 手动加班费
         const manualEl = document.getElementById('manualOvertime');
         manualEl?.addEventListener('change', function(){
             const v = this.value.trim();
             salaryConfig.manualOvertimePay = v==='' ? null : parseFloat(v);
-            saveSalaryConfig();
-            updateSalaryDisplay();
+            saveSalaryConfig(); updateSalaryDisplay();
         });
         document.getElementById('resetOvertimeBtn')?.addEventListener('click', ()=>{
             salaryConfig.manualOvertimePay = null;
-            saveSalaryConfig();
-            updateSalaryDisplay();
+            saveSalaryConfig(); updateSalaryDisplay();
         });
     }
 
-    /** 局部更新薪资卡片与加班费卡片数字 (不重新渲染整个页面) */
     function updateSalaryDisplay(){
         const sal = computeSalary();
-        // 更新实发工资数字
-        const valEl = document.querySelector('#salarySection .stat-value');
-        if(valEl) valEl.textContent = sal.net.toFixed(1);
-        const grossEl = document.querySelector('#salarySection .stat-left span:last-child');
+        const oRes = sal.overtimeRes;
+        // 更新薪资卡片
+        const netEl = document.getElementById('netSalaryValue');
+        if(netEl) netEl.textContent = sal.net.toFixed(1);
+        const grossEl = document.getElementById('grossSalarySub');
         if(grossEl) grossEl.textContent = `应发 ${sal.gross.toFixed(1)}`;
-        // 更新餐补显示
         const mealEl = document.getElementById('meal');
         if(mealEl) mealEl.value = sal.meal.toFixed(1);
-        // 更新夜班补贴 (如果手动为null则显示自动值)
         const nightEl = document.getElementById('nightAllow');
         if(nightEl && salaryConfig.nightAllowanceManual===null) nightEl.value = sal.autoNight.toFixed(1);
 
-        // 更新加班费卡片
-        const oRes = sal.overtimeRes;
-        const otVal = document.querySelector('#overtimePaySection .stat-value');
-        if(otVal) otVal.textContent = oRes.autoOvertimePay.toFixed(1);
-        const otSub = document.querySelector('#overtimePaySection .stat-left span:last-child');
+        // 更新加班费卡片头部
+        const otTotal = document.getElementById('overtimePayTotal');
+        if(otTotal) otTotal.textContent = oRes.autoOvertimePay.toFixed(1);
+        const otSub = document.getElementById('overtimePaySub');
         if(otSub) otSub.innerHTML = `延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}`;
+
+        // 更新加班费卡片展开区域（关键）
+        const normalPayVal = document.getElementById('normalOvertimePayValue');
+        if(normalPayVal) normalPayVal.textContent = oRes.normalOvertimePay.toFixed(1);
+        const holidayPayVal = document.getElementById('holidayOvertimePayValue');
+        if(holidayPayVal) holidayPayVal.textContent = oRes.holidayOvertimePay.toFixed(1);
     }
 
-    // ---------- 月份切换 ----------
     function changeMonth(delta){
         let nm = month+delta, ny = year;
         if(nm<1){ nm=12; ny--; } if(nm>12){ nm=1; ny++; }
-        if(ny<2020||ny>2099) return; // 年份范围限制
+        if(ny<2020||ny>2099) return;
         year = ny; month = nm;
         loadData();
-        // 修正选中日期避免越界
         const max = getDays(year,month);
         if(selectedDay !== null && selectedDay >= max) selectedDay = max-1;
         closeModal();
         renderAll();
     }
 
-    // ---------- 动态更新主题色 ----------
     function updateThemeColor(){
         const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
         themeMeta.setAttribute('content', isLight ? '#FF9500' : '#000000');
@@ -837,20 +697,14 @@
     updateThemeColor();
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateThemeColor);
 
-    // ---------- 初始化 ----------
-    // 弹窗事件绑定 (静态元素)
     document.querySelectorAll('#modalShiftSelector .shift-option-big').forEach(b => b.addEventListener('click', ()=> setShiftFromModal(b.dataset.shift)));
     document.getElementById('modalSaveBtn').addEventListener('click', saveModal);
     modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) closeModal(); });
 
     const now = new Date();
-    year = now.getFullYear();
-    month = now.getMonth()+1;
-    selectedDay = now.getDate()-1; // 默认选中今天
-
-    loadData();
-    loadSalaryConfig();
-    loadFullHours();
+    year = now.getFullYear(); month = now.getMonth()+1;
+    selectedDay = now.getDate()-1;
+    loadData(); loadSalaryConfig(); loadFullHours();
     renderAll();
 
     document.getElementById('prevMonthBtn').addEventListener('click', ()=> changeMonth(-1));
