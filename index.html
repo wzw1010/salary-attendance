@@ -423,7 +423,6 @@
 
     function closeModal(){
         modalOverlay.classList.remove('show');
-        // 关键修复：关闭弹窗后将焦点移走，防止幽灵焦点残留
         if(document.activeElement) document.activeElement.blur();
         document.body.focus();
     }
@@ -453,7 +452,10 @@
     }
 
     function renderAll(){
-        if(selectedDay === null || selectedDay >= getDays(year, month)) selectedDay = new Date().getDate()-1;
+        const daysInMonth = getDays(year, month);
+        if (selectedDay === null || selectedDay < 0 || selectedDay >= daysInMonth) {
+            selectedDay = Math.max(0, Math.min(daysInMonth - 1, new Date().getDate() - 1));
+        }
         const stats = computeWorkStats();
         const pct = fullWorkHours > 0 ? Math.min(100, (stats.total / fullWorkHours)*100) : 0;
         const circ = 2 * Math.PI * 18;
@@ -482,15 +484,15 @@
                 <div class="section-body">
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" fill="none"/><line x1="8" y1="10" x2="16" y2="10" stroke="currentColor"/></svg>正常工时</span>
-                        <span class="detail-value" id="normalTotalValue">${stats.normalTotal.toFixed(1)} h</span>
+                        <span class="detail-value">${stats.normalTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>加班工时</span>
-                        <span class="detail-value" id="overtimeTotalValue">${stats.overtimeTotal.toFixed(1)} h</span>
+                        <span class="detail-value">${stats.overtimeTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定节假日工时</span>
-                        <span class="detail-value" id="holidayTotalValue">${stats.holidayTotal.toFixed(1)} h</span>
+                        <span class="detail-value">${stats.holidayTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none"/></svg>满勤工时</span>
@@ -503,8 +505,10 @@
                 <div class="stat-header" data-toggle="overtimePay">
                     <div class="stat-left">
                         <span class="stat-label">加班薪资</span>
-                        <span class="stat-value" id="overtimePayTotal">${oRes.autoOvertimePay.toFixed(1)}</span>
-                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);" id="overtimePaySub">延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}</span>
+                        <span class="stat-value" id="overtimePayTotal">${oRes.finalOvertimePay.toFixed(1)}</span>
+                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);" id="overtimePaySub">
+                            ${salaryConfig.manualOvertimePay !== null ? '手动 ' : ''}延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}
+                        </span>
                     </div>
                     <div class="stat-right">
                         <svg class="stat-icon" viewBox="0 0 24 24" stroke="var(--color-overtime)" fill="none" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -533,7 +537,7 @@
                     <div class="stat-left">
                         <span class="stat-label">实发薪资</span>
                         <span class="stat-value" id="netSalaryValue">${sal.net.toFixed(1)}</span>
-                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);" id="grossSalarySub">应发 ${sal.gross.toFixed(1)}</span>
+                        <span style="font-size:var(--font-caption); color:var(--text-tertiary);">应发 ${sal.gross.toFixed(1)}</span>
                     </div>
                     <div class="stat-right">
                         <svg class="stat-icon" viewBox="0 0 24 24" stroke="var(--color-salary)" fill="none" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -562,7 +566,7 @@
         `;
 
         renderCalendar();
-        bindEvents();
+        bindDynamicEvents();
     }
 
     function renderCalendar(){
@@ -588,16 +592,30 @@
         calArea.innerHTML = html;
     }
 
-    function bindEvents(){
-        // 改用 pointerdown 并阻止默认，彻底避免焦点干扰
+    // 只绑定一次的静态事件（委托）
+    function bindStaticEvents() {
+        // 卡片展开折叠委托
         cardsWrapper.addEventListener('pointerdown', (e) => {
             const toggleBtn = e.target.closest('[data-toggle]');
             if(!toggleBtn) return;
             if(e.target.closest('input') || e.target.closest('button')) return;
-            e.preventDefault(); // 阻止焦点切换
+            e.preventDefault();
             toggleBtn.closest('.section').classList.toggle('expanded');
         });
 
+        // 模态框内班次选择
+        document.querySelectorAll('#modalShiftSelector .shift-option-big').forEach(b => {
+            b.addEventListener('click', ()=> setShiftFromModal(b.dataset.shift));
+        });
+        document.getElementById('modalSaveBtn').addEventListener('click', saveModal);
+        modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) closeModal(); });
+
+        document.getElementById('prevMonthBtn').addEventListener('click', ()=> changeMonth(-1));
+        document.getElementById('nextMonthBtn').addEventListener('click', ()=> changeMonth(1));
+    }
+
+    // 每次渲染后绑定动态元素事件
+    function bindDynamicEvents() {
         const fullEl = document.getElementById('fullHoursDisplay');
         fullEl?.addEventListener('click', (e)=>{
             e.stopPropagation();
@@ -636,14 +654,16 @@
         const nightEl = document.getElementById('nightAllow');
         nightEl?.addEventListener('change', function(){
             const v = this.value.trim();
-            salaryConfig.nightAllowanceManual = v==='' ? null : parseFloat(v);
+            const num = parseFloat(v);
+            salaryConfig.nightAllowanceManual = (v === '' || isNaN(num)) ? null : num;
             saveSalaryConfig(); updateSalaryDisplay();
         });
 
         const manualEl = document.getElementById('manualOvertime');
         manualEl?.addEventListener('change', function(){
             const v = this.value.trim();
-            salaryConfig.manualOvertimePay = v==='' ? null : parseFloat(v);
+            const num = parseFloat(v);
+            salaryConfig.manualOvertimePay = (v === '' || isNaN(num)) ? null : num;
             saveSalaryConfig(); updateSalaryDisplay();
         });
         document.getElementById('resetOvertimeBtn')?.addEventListener('click', ()=>{
@@ -655,23 +675,21 @@
     function updateSalaryDisplay(){
         const sal = computeSalary();
         const oRes = sal.overtimeRes;
-        // 更新薪资卡片
+
         const netEl = document.getElementById('netSalaryValue');
         if(netEl) netEl.textContent = sal.net.toFixed(1);
-        const grossEl = document.getElementById('grossSalarySub');
+        const grossEl = document.querySelector('#salarySection .stat-left span:last-child');
         if(grossEl) grossEl.textContent = `应发 ${sal.gross.toFixed(1)}`;
         const mealEl = document.getElementById('meal');
         if(mealEl) mealEl.value = sal.meal.toFixed(1);
         const nightEl = document.getElementById('nightAllow');
         if(nightEl && salaryConfig.nightAllowanceManual===null) nightEl.value = sal.autoNight.toFixed(1);
 
-        // 更新加班费卡片头部
         const otTotal = document.getElementById('overtimePayTotal');
-        if(otTotal) otTotal.textContent = oRes.autoOvertimePay.toFixed(1);
+        if(otTotal) otTotal.textContent = oRes.finalOvertimePay.toFixed(1);
         const otSub = document.getElementById('overtimePaySub');
-        if(otSub) otSub.innerHTML = `延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}`;
+        if(otSub) otSub.innerHTML = `${salaryConfig.manualOvertimePay !== null ? '手动 ' : ''}延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}`;
 
-        // 更新加班费卡片展开区域（关键）
         const normalPayVal = document.getElementById('normalOvertimePayValue');
         if(normalPayVal) normalPayVal.textContent = oRes.normalOvertimePay.toFixed(1);
         const holidayPayVal = document.getElementById('holidayOvertimePayValue');
@@ -697,18 +715,13 @@
     updateThemeColor();
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateThemeColor);
 
-    document.querySelectorAll('#modalShiftSelector .shift-option-big').forEach(b => b.addEventListener('click', ()=> setShiftFromModal(b.dataset.shift)));
-    document.getElementById('modalSaveBtn').addEventListener('click', saveModal);
-    modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) closeModal(); });
-
+    // 初始化
     const now = new Date();
     year = now.getFullYear(); month = now.getMonth()+1;
     selectedDay = now.getDate()-1;
     loadData(); loadSalaryConfig(); loadFullHours();
-    renderAll();
-
-    document.getElementById('prevMonthBtn').addEventListener('click', ()=> changeMonth(-1));
-    document.getElementById('nextMonthBtn').addEventListener('click', ()=> changeMonth(1));
+    bindStaticEvents();   // 只绑定一次
+    renderAll();          // 首次渲染
 })();
 </script>
 </body>
