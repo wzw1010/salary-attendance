@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="考勤薪资">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#FF9500" id="themeColorMeta">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-512.png">
     <title>考勤·薪资预算</title>
@@ -50,6 +50,7 @@
             --safe-top: env(safe-area-inset-top, 0px);
             --shadow: 0 4px 12px rgba(0,0,0,0.4);
             --header-height: 60px;
+            --header-gradient: linear-gradient(to bottom, #000000 60%, transparent);
         }
 
         @media (prefers-color-scheme: light) {
@@ -64,6 +65,7 @@
                 --text-secondary: rgba(0, 0, 0, 0.55);
                 --text-tertiary: rgba(0, 0, 0, 0.35);
                 --shadow: 0 2px 10px rgba(0,0,0,0.06);
+                --header-gradient: linear-gradient(to bottom, #FF9500 20%, #f2f2f7 100%);
             }
         }
 
@@ -77,20 +79,12 @@
             -webkit-font-smoothing: antialiased;
             transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
+            padding-top: calc(var(--header-height) + var(--safe-top) + 8px);
+            padding-bottom: calc(8px + var(--safe-bottom));
         }
-        .app {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+        .app { max-width: 480px; margin:0 auto; padding:0 var(--space-md); }
 
-        /* 健康 App 风格渐变头部 */
+        /* 头部导航 (无图标) */
         .nav-header {
             position: fixed;
             top: 0;
@@ -103,23 +97,19 @@
             display: flex;
             align-items: center;
             gap: var(--space-sm);
-            background: linear-gradient(to bottom, var(--bg-primary) 60%, transparent);
+            background: var(--header-gradient);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             min-height: var(--header-height);
-            pointer-events: auto;
         }
         .header-title {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
             font-weight: 700;
             font-size: var(--font-title);
             color: var(--text-primary);
             white-space: nowrap;
-            flex-shrink: 0;
             margin-right: auto;
             margin-left: 0.3em;
         }
-        .header-title svg { width: 22px; height: 22px; fill: var(--accent); }
         .month-control {
             display: flex;
             align-items: center;
@@ -127,110 +117,74 @@
             flex-shrink: 0;
         }
         .month-arrow {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-input);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-secondary);
-            border: none;
-            transition: background 0.2s;
+            width:32px; height:32px;
+            display: flex; align-items:center; justify-content:center;
+            background: var(--bg-input); border-radius:var(--radius-full);
+            cursor:pointer; font-size:14px; color:var(--text-secondary); border:none;
+            transition:background 0.2s;
         }
         .month-arrow:active { background: rgba(128,128,128,0.2); }
         .month-indicator {
-            width: 28px;
-            height: 28px;
-            border-radius: var(--radius-full);
+            width:28px; height:28px; border-radius:var(--radius-full);
             background: var(--bg-input);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            pointer-events: none;
+            display:flex; align-items:center; justify-content:center;
+            font-size:11px; font-weight:600; color: var(--text-secondary);
+            pointer-events:none;
         }
 
-        /* 滚动区域弹性填充到底部 */
-        .scroll-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: calc(var(--header-height) + var(--safe-top) + 8px) var(--space-md) 0;
-            margin-top: 0;
-        }
-
-        /* 内容包装器，让日历自动贴底 */
-        .cards-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        .calendar-section {
-            margin-top: auto;
-            padding-bottom: calc(var(--safe-bottom) + 8px);
-        }
+        .scroll-content { padding-top: var(--space-sm); }
 
         /* 卡片通用 */
         .section {
             background: var(--bg-card);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border-card);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-sm);
-            overflow: hidden;
+            border:1px solid var(--border-card); border-radius:var(--radius-md);
+            margin-bottom: var(--space-md);
+            overflow:hidden;
             box-shadow: var(--shadow);
         }
         .section-header {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-md);
-            cursor: pointer;
+            display:flex; align-items:center; gap:var(--space-sm);
+            padding: var(--space-md); cursor:pointer;
             transition: background 0.2s;
         }
         .section-header:active { background: var(--bg-input); }
         .section-header .header-icon {
-            width: 20px; height: 20px; stroke: var(--text-secondary); fill: none; stroke-width: 1.8;
-            flex-shrink: 0;
+            width:20px; height:20px; stroke: var(--text-secondary); fill:none; stroke-width:1.8;
+            flex-shrink:0;
         }
         .section-header .header-label {
             font-size: var(--font-caption); color: var(--text-secondary);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;
-            flex: 1;
+            font-weight:600; text-transform:uppercase; letter-spacing:0.3px;
+            flex:1;
         }
         .section-header .header-value {
-            font-size: var(--font-body); font-weight: 600; color: var(--text-primary);
-            margin-right: 4px;
+            font-size: var(--font-body); font-weight:600; color: var(--text-primary);
+            margin-right:4px;
         }
         .section-header .chevron {
-            width: 16px; height: 16px; stroke: var(--text-tertiary); fill: none; stroke-width: 2;
+            width:16px; height:16px; stroke: var(--text-tertiary); fill:none; stroke-width:2;
             transition: transform 0.3s;
         }
         .section.expanded .section-header .chevron { transform: rotate(90deg); }
         .section.expanded .section-header { border-bottom: 1px solid var(--border-card); }
-        .section-body { display: none; padding: 0 var(--space-md) var(--space-md); }
-        .section.expanded .section-body { display: block; }
+        .section-body { display:none; padding: 0 var(--space-md) var(--space-md); }
+        .section.expanded .section-body { display:block; }
 
         /* 主卡片头部 */
         .stat-header {
-            display: flex; align-items: center; gap: var(--space-sm);
-            padding: var(--space-md); cursor: pointer;
+            display:flex; align-items:center; gap:var(--space-sm);
+            padding: var(--space-md); cursor:pointer;
             transition: background 0.2s;
         }
         .stat-header:active { background: var(--bg-input); }
-        .stat-left { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-        .stat-label { font-size: var(--font-caption); color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-        .stat-value { font-size: var(--font-large); font-weight: 700; color: var(--text-primary); line-height: 1.1; }
-        .stat-right { display: flex; align-items: center; gap: 8px; }
-        .stat-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
-        .progress-ring { width: 44px; height: 44px; }
-        .progress-ring circle { fill: none; stroke-width: 5; stroke-linecap: round; }
+        .stat-left { display:flex; flex-direction:column; gap:2px; flex:1; }
+        .stat-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.3px; }
+        .stat-value { font-size:var(--font-large); font-weight:700; color:var(--text-primary); line-height:1.1; }
+        .stat-right { display:flex; align-items:center; gap:8px; }
+        .stat-icon { width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
+        .progress-ring { width:44px; height:44px; }
+        .progress-ring circle { fill:none; stroke-width:5; stroke-linecap:round; }
         .ring-bg { stroke: rgba(128,128,128,0.15); }
 
         #workHoursSection .stat-value { color: var(--color-hours); }
@@ -239,121 +193,131 @@
         #salarySection .stat-value { color: var(--color-salary); }
 
         .overtime-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid var(--border-card);
-            font-size: var(--font-caption);
+            display:flex; justify-content:space-between; align-items:center;
+            padding:10px 0; border-bottom:1px solid var(--border-card);
+            font-size:var(--font-caption);
         }
-        .overtime-row:last-child { border-bottom: none; }
-        .overtime-label { color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-        .overtime-label svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
-        .overtime-value { font-weight: 600; color: var(--text-primary); }
+        .overtime-row:last-child { border-bottom:none; }
+        .overtime-label { color: var(--text-secondary); display:flex; align-items:center; gap:6px; }
+        .overtime-label svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:1.5; }
+        .overtime-value { font-weight:600; color: var(--text-primary); }
+
+        /* 手动更正行调整为紧凑输入框 */
+        .manual-row {
+            display:flex; align-items:center; gap:8px; padding-top:8px;
+        }
+        .manual-row .input-field {
+            height: 36px;
+            font-size: var(--font-body);
+        }
 
         .detail-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 0; border-bottom: 1px solid var(--border-card);
+            display:flex; align-items:center; justify-content:space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-card);
             font-size: var(--font-caption);
         }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-        .detail-label svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
-        .detail-value { font-weight: 600; color: var(--text-primary); }
-        .editable { color: var(--color-hours); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+        .detail-row:last-child { border-bottom:none; }
+        .detail-label { color: var(--text-secondary); display:flex; align-items:center; gap:6px; }
+        .detail-label svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:1.5; }
+        .detail-value { font-weight:600; color: var(--text-primary); }
+        .editable { color: var(--color-hours); cursor:pointer; text-decoration:underline; text-underline-offset:2px; }
 
         .salary-grid {
-            display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-sm);
+            display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm);
             padding: var(--space-sm) 0;
         }
         .salary-item {
-            background: var(--bg-input); border-radius: var(--radius-sm);
-            padding: var(--space-sm); text-align: center;
-            display: flex; flex-direction: column; gap: 4px;
+            background: var(--bg-input); border-radius:var(--radius-sm);
+            padding: var(--space-sm); text-align:center;
+            display:flex; flex-direction:column; gap:4px;
         }
-        .salary-item .item-label { font-size: var(--font-caption); color: var(--text-secondary); font-weight: 500; }
+        .salary-item .item-label {
+            font-size:var(--font-caption); color:var(--text-secondary);
+            font-weight:500;
+        }
         .salary-item .item-input {
-            background: transparent; border: none; color: var(--text-primary);
-            font-size: var(--font-body); font-weight: 600; text-align: center;
-            width: 100%; outline: none; font-family: inherit;
+            background:transparent; border:none; color:var(--text-primary);
+            font-size:var(--font-body); font-weight:600; text-align:center;
+            width:100%; outline:none; font-family:inherit;
         }
 
         /* 日历 */
-        .calendar-week { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; margin-bottom: 4px; color: var(--text-secondary); font-size: 11px; font-weight: 500; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; }
+        .calendar-week { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; margin-bottom:4px; color:var(--text-secondary); font-size:11px; font-weight:500; }
+        .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
         .cal-day {
-            aspect-ratio: 1/1; background: var(--bg-card); border-radius: var(--radius-sm);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
-            border: 1px solid transparent; position: relative;
+            aspect-ratio:1/1; background:var(--bg-card); border-radius:var(--radius-sm);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            cursor:pointer; transition:transform 0.15s, box-shadow 0.2s;
+            border:1px solid transparent; position:relative;
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-        .cal-day:active { transform: scale(0.94); }
-        .cal-day.empty { background: transparent; box-shadow: none; pointer-events: none; }
-        .cal-day.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+        .cal-day:active { transform:scale(0.94); }
+        .cal-day.empty { background:transparent; box-shadow:none; pointer-events:none; }
+        .cal-day.today { border-color: var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
         .cal-day.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
-        .cal-day.work { background: var(--bg-work); } .cal-day.night { background: var(--bg-night); }
-        .cal-day.rest { background: var(--bg-rest); } .cal-day.holiday { background: var(--bg-holiday); }
-        .day-number { font-size: var(--font-body); font-weight: 600; }
-        .day-label { font-size: 9px; font-weight: 600; color: var(--text-secondary); margin-top: 1px; }
+        .cal-day.work { background:var(--bg-work); } .cal-day.night { background:var(--bg-night); }
+        .cal-day.rest { background:var(--bg-rest); } .cal-day.holiday { background:var(--bg-holiday); }
+        .day-number { font-size:var(--font-body); font-weight:600; }
+        .day-label { font-size:9px; font-weight:600; color:var(--text-secondary); margin-top:1px; }
 
         /* 编辑弹窗 */
         .modal-overlay {
-            position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+            position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            opacity:0; pointer-events:none; transition:opacity 0.3s;
         }
-        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-overlay.show { opacity:1; pointer-events:auto; }
         .modal-content {
-            width: 85%; max-width: 400px; background: var(--bg-card-solid);
+            width:85%; max-width:400px; background: var(--bg-card-solid);
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border-radius: var(--radius-lg);
             padding: var(--space-lg); box-shadow: var(--shadow);
-            display: flex; flex-direction: column; gap: var(--space-md);
-            transform: scale(0.9); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display:flex; flex-direction:column; gap:var(--space-md);
+            transform: scale(0.9); transition:transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-card);
         }
         .modal-overlay.show .modal-content { transform: scale(1); }
-        .modal-shift-selector { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+        .modal-shift-selector { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-sm); }
         .shift-option-big {
-            background: var(--bg-input); border: 1px solid var(--border-input); border-radius: var(--radius-md);
-            padding: var(--space-md) var(--space-sm); cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            color: var(--text-secondary); transition: all 0.2s;
+            background:var(--bg-input); border:1px solid var(--border-input); border-radius:var(--radius-md);
+            padding:var(--space-md) var(--space-sm); cursor:pointer;
+            display:flex; flex-direction:column; align-items:center; gap:6px;
+            color:var(--text-secondary); transition:all 0.2s;
         }
-        .shift-option-big svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; }
-        .shift-option-big .shift-text { font-size: var(--font-caption); font-weight: 600; }
-        .shift-option-big.active { background: var(--accent); color: #000; border-color: var(--accent); }
-        .modal-hours-row { display: flex; gap: 8px; align-items: center; }
-        .modal-hours-row .input-field { flex: 1; }
+        .shift-option-big svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.8; }
+        .shift-option-big .shift-text { font-size:var(--font-caption); font-weight:600; }
+        .shift-option-big.active { background:var(--accent); color:#000; border-color:var(--accent); }
+        .modal-hours-row { display:flex; gap:8px; align-items:center; }
+        .modal-hours-row .input-field { flex:1; }
         .btn-save {
-            background: var(--accent); border: none; color: #000; border-radius: var(--radius-sm);
-            padding: 12px 20px; font-weight: 700; font-size: var(--font-body); cursor: pointer;
+            background:var(--accent); border:none; color:#000; border-radius:var(--radius-sm);
+            padding:12px 20px; font-weight:700; font-size:var(--font-body); cursor:pointer;
         }
 
         .input-field {
-            background: var(--bg-input); border: 1px solid var(--border-input); border-radius: var(--radius-sm);
-            padding: 10px 12px; font-size: var(--font-body); font-weight: 600; color: var(--text-primary);
-            text-align: center; width: 100%; font-family: inherit; outline: none;
-            transition: border-color 0.2s;
-            -webkit-appearance: none;
+            background:var(--bg-input); border:1px solid var(--border-input); border-radius:var(--radius-sm);
+            padding:10px 12px; font-size:var(--font-body); font-weight:600; color:var(--text-primary);
+            text-align:center; width:100%; font-family:inherit; outline:none;
+            transition:border-color 0.2s;
+            -webkit-appearance:none;
         }
         .input-field:focus { border-color: var(--accent); }
 
         .toast-msg {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--bg-card-solid); padding: 10px 24px; border-radius: 50px;
-            font-size: var(--font-caption); z-index: 200; opacity: 0; transition: 0.3s;
-            box-shadow: var(--shadow); pointer-events: none;
+            position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+            background:var(--bg-card-solid); padding:10px 24px; border-radius:50px;
+            font-size:var(--font-caption); z-index:200; opacity:0; transition:0.3s;
+            box-shadow:var(--shadow); pointer-events:none;
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
-        .toast-msg.show { opacity: 1; bottom: 30px; }
+        .toast-msg.show { opacity:1; bottom:30px; }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="nav-header">
-        <div class="header-title">
-            <svg fill="currentColor" viewBox="0 0 210 256"><path d="M174.55 144.5c-1.4-4-5-6.5-9.2-6.5H159V23c0-11.7-9.3-21-21-21H25C12.6 2 2 12.6 2 25v183c0 11.9 11 22 22.8 22h114.2c1.2 0 2.3 1 2.2 2.2-.1 1.3-1.2 1.8-2.4 1.8h-45.5L128 254h80l-33.4-109.5zM82 220.2c-3.2 0-5.6-2.4-5.6-5.6 0-3 2.6-5.6 5.6-5.6 3.2 0 5.6 2.4 5.6 5.6 0 3.2-2.4 5.6-5.6 5.6zM144 138h-19.7c-5.3 0-9.8 4.7-9.8 10s4.5 10 9.8 10h19.8v42H18V31h126v107zM80.6 134.9c23.7 0 43-19.2 43-43s-19.2-43-43-43-43 19.2-43 43 19.2 43 43 43zm-2.4-39.4c-7.9-2.8-12.8-6.7-12.8-13.8 0-6.5 4.3-11.7 12.3-13.3v-7.1h5.9v6.7c4.9 0 8.5 1 11.1 2.4l-2.4 8.5c-2-.8-5.1-2.2-9.5-2.2s-6.7 2.2-6.7 4.3c0 3 2.8 4.1 8.7 6.5 8.1 3 11.9 7.1 11.9 13.8 0 6.7-4.1 11.9-12.8 13.8v6.7h-5.9v-6.5c-5.1 0-10.3-1.4-12.8-2.8l2.2-8.7c2.8 1.4 7.1 3 11.7 3 4.9 0 7.3-2.2 7.3-5.1s-2.4-4.5-8.2-6.7z"/></svg>
-            考勤·薪资预算
-        </div>
+        <span class="header-title">考勤·薪资预算</span>
         <div class="month-control">
             <button class="month-arrow" id="prevMonthBtn">◀</button>
             <span class="month-indicator" id="monthIndicator"></span>
@@ -362,7 +326,7 @@
     </div>
 
     <div class="scroll-content" id="scrollContent">
-        <div class="cards-wrapper" id="cardsWrapper">
+        <div id="cardsWrapper">
             <!-- 动态渲染卡片 -->
         </div>
     </div>
@@ -400,10 +364,10 @@
 
 <script>
 (function(){
-    const STORAGE_PREFIX = 'wh_v47_';
+    const STORAGE_PREFIX = 'wh_v48_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
-    const SALARY_STORAGE = 'sc_v38';
-    const FULL_HOURS_KEY = 'fh_v29';
+    const SALARY_STORAGE = 'sc_v39';
+    const FULL_HOURS_KEY = 'fh_v30';
 
     let year, month, data = [];
     let selectedDay = null;
@@ -419,6 +383,14 @@
     const cardsWrapper = $('cardsWrapper');
     const toastEl = $('toastMsg');
     const modalOverlay = $('editModalOverlay');
+    const themeMeta = $('themeColorMeta');
+
+    function updateThemeColor(){
+        const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        themeMeta.setAttribute('content', isLight ? '#FF9500' : '#000000');
+    }
+    updateThemeColor();
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateThemeColor);
 
     function showToast(msg) {
         toastEl.textContent = msg; toastEl.classList.add('show');
@@ -542,7 +514,7 @@
             <div class="section" id="workHoursSection">
                 <div class="stat-header" data-toggle="workHours">
                     <div class="stat-left">
-                        <span class="stat-label">总工时</span>
+                        <span class="stat-label">记薪工时</span>
                         <span class="stat-value">${stats.total.toFixed(1)}</span>
                         <span style="font-size:var(--font-caption); color:var(--text-tertiary);">满勤 ${fullWorkHours.toFixed(1)}</span>
                     </div>
@@ -560,11 +532,11 @@
                         <span class="detail-value">${stats.normalTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>加班工时</span>
+                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>延时加班工时</span>
                         <span class="detail-value">${stats.overtime.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定假日加班</span>
+                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定假日工时</span>
                         <span class="detail-value">${stats.holidayOvertime.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
@@ -595,7 +567,7 @@
                         <span class="overtime-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定节假日加班费</span>
                         <span class="overtime-value">${oRes.holidayOvertimePay.toFixed(1)}</span>
                     </div>
-                    <div style="display:flex; align-items:center; gap:8px; padding-top:8px;">
+                    <div class="manual-row">
                         <span style="font-size:var(--font-caption); color:var(--text-secondary);">手动更正</span>
                         <input class="input-field" id="manualOvertime" value="${salaryConfig.manualOvertimePay??''}" step="10" placeholder="自动" inputmode="decimal" style="flex:1;">
                         <button id="resetOvertimeBtn" style="background:var(--bg-input); border:1px solid var(--border-input); padding:4px 10px; border-radius:var(--radius-sm); font-size:var(--font-caption); color:var(--text-primary);">重置</button>
@@ -606,7 +578,7 @@
             <div class="section" id="salarySection">
                 <div class="stat-header" data-toggle="salary">
                     <div class="stat-left">
-                        <span class="stat-label">实发工资</span>
+                        <span class="stat-label">实发薪资</span>
                         <span class="stat-value">${sal.net.toFixed(1)}</span>
                         <span style="font-size:var(--font-caption); color:var(--text-tertiary);">应发 ${sal.gross.toFixed(1)}</span>
                     </div>
@@ -619,10 +591,10 @@
                     <div class="salary-grid">
                         <div class="salary-item"><span class="item-label">底薪</span><input class="item-input" id="baseSalary" value="${salaryConfig.baseSalary}" step="100" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">绩效</span><input class="item-input" id="performance" value="${salaryConfig.performance}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">其他扣款</span><input class="item-input" id="otherDeduction" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">其它扣款</span><input class="item-input" id="otherDeduction" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">其它补贴</span><input class="item-input" id="otherAllowance" value="${salaryConfig.otherAllowance}" step="50" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">五险一金</span><input class="item-input" id="insurance" value="${salaryConfig.insuranceDeduction}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">个税</span><input class="item-input" id="tax" value="${salaryConfig.personalTax}" step="100" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">个人所得税</span><input class="item-input" id="tax" value="${salaryConfig.personalTax}" step="100" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">餐补 (自动)</span><input class="item-input" id="meal" value="${sal.meal.toFixed(1)}" readonly></div>
                         <div class="salary-item"><span class="item-label">夜班补贴</span><input class="item-input" id="nightAllow" value="${sal.nightAllow.toFixed(1)}" step="10" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">房租水电</span><input class="item-input" id="rent" value="${salaryConfig.rentDeduction}" step="50" inputmode="decimal"></div>
