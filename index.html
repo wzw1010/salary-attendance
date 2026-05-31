@@ -12,8 +12,7 @@
     <title>考勤·薪资预算</title>
     <style>
         :root {
-            --bg-primary: #000000;
-            --bg-card: rgba(255, 255, 255, 0.06);
+            --bg-primary: #0A0A0C;  /* 微暖黑，代替纯黑 */
             --bg-card-solid: #1c1c1e;
             --bg-input: rgba(255, 255, 255, 0.08);
             --border-card: rgba(255, 255, 255, 0.08);
@@ -53,7 +52,6 @@
         @media (prefers-color-scheme: light) {
             :root {
                 --bg-primary: #f2f2f7;
-                --bg-card: rgba(0, 0, 0, 0.04);
                 --bg-card-solid: #ffffff;
                 --bg-input: rgba(0, 0, 0, 0.06);
                 --border-card: rgba(0, 0, 0, 0.08);
@@ -70,6 +68,7 @@
                 --bg-night: rgba(142, 143, 255, 0.18);
                 --bg-rest: rgba(174, 174, 178, 0.22);
                 --bg-holiday: rgba(255, 160, 64, 0.25);
+                --shadow: 0 2px 10px rgba(0,0,0,0.06);
             }
         }
 
@@ -87,13 +86,30 @@
             position: relative;
         }
 
+        /* 径向渐变光晕层：模拟健康 App 顶部柔和漫射光 */
         .gradient-bg {
-            position: fixed; top:0; left:0; width:100%; height:65vh; z-index:0;
+            position: fixed; top:0; left:0; width:100%; height:100vh; z-index:0;
             pointer-events: none;
-            background: linear-gradient(to bottom, #FF5E3A 0%, rgba(255,94,58,0.35) 40%, transparent 85%);
+            /* 深色模式：从顶部中央向下扩散的极淡橙红光 */
+            background: radial-gradient(
+                ellipse at 50% 10%,
+                rgba(255,107,68,0.18) 0%,
+                rgba(255,94,58,0.08) 30%,
+                rgba(255,94,58,0.03) 60%,
+                transparent 100%
+            );
         }
         @media (prefers-color-scheme: light) {
-            .gradient-bg { background: linear-gradient(to bottom, #FF6B44 0%, rgba(255,107,68,0.25) 45%, transparent 85%); }
+            .gradient-bg {
+                /* 浅色模式：稍亮一些，但仍保持柔和克制 */
+                background: radial-gradient(
+                    ellipse at 50% 10%,
+                    rgba(255,107,68,0.22) 0%,
+                    rgba(255,107,68,0.10) 35%,
+                    rgba(255,107,68,0.04) 65%,
+                    transparent 100%
+                );
+            }
         }
 
         .app { max-width:480px; margin:0 auto; padding:0 var(--space-md); position:relative; z-index:1; }
@@ -102,11 +118,13 @@
             position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; z-index:10;
             padding: calc(var(--safe-top) + 10px) var(--space-md) 12px;
             display:flex; align-items:center; gap:var(--space-sm);
-            background: transparent; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            min-height: var(--header-height); border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            min-height: var(--header-height);
+            /* 无分割线 */
         }
         .header-title-group { display:flex; align-items:center; gap:8px; margin-right:auto; }
-        .header-title { font-weight:700; font-size:var(--font-title); color:var(--text-primary); }
+        .header-title { font-weight:700; font-size:var(--font-title); color:var(--text-primary); white-space: nowrap; }
         .month-indicator-circle {
             width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,0.12);
             display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600;
@@ -126,8 +144,10 @@
         .section {
             background: var(--bg-card-solid);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border:1px solid var(--border-card); border-radius:var(--radius-md);
-            margin-bottom:16px; overflow:hidden; box-shadow:var(--shadow);
+            border:1px solid var(--border-card);
+            border-radius:var(--radius-md);
+            margin-bottom:16px; overflow:hidden;
+            box-shadow:var(--shadow);
         }
         #salarySection { margin-bottom:33.3px; }
 
@@ -146,18 +166,17 @@
             padding:var(--space-md); cursor:pointer;
         }
         .stat-left { display:flex; flex-direction:column; gap:2px; flex:1; }
-        .stat-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:600; text-transform:uppercase; }
+        .stat-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.3px; }
         .stat-value { font-size:var(--font-large); font-weight:700; color:var(--text-primary); line-height:1.1; }
         .stat-right { display:flex; align-items:center; gap:8px; }
-        .stat-icon { width:44px; height:44px; }
-        .progress-ring { width:44px; height:44px; }
+        .stat-icon, .progress-ring { width:44px; height:44px; }
         .progress-ring circle { fill:none; stroke-width:5; stroke-linecap:round; }
         .ring-bg { stroke:rgba(128,128,128,0.15); }
 
-        #workHoursSection .stat-value { color:var(--color-hours); }
-        #workHoursSection .ring-fill { stroke:var(--color-hours); }
-        #overtimePaySection .stat-value { color:var(--color-overtime); }
-        #salarySection .stat-value { color:var(--color-salary); }
+        #workHoursSection .stat-value { color: var(--color-hours); }
+        #workHoursSection .ring-fill { stroke: var(--color-hours); }
+        #overtimePaySection .stat-value { color: var(--color-overtime); }
+        #salarySection .stat-value { color: var(--color-salary); }
 
         .overtime-row {
             display:flex; justify-content:space-between; align-items:center;
@@ -198,7 +217,7 @@
 
         .salary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm); padding:var(--space-sm) 0; }
         .salary-item { background:var(--bg-input); border-radius:var(--radius-sm); padding:var(--space-sm); text-align:center; }
-        .salary-item .item-label { font-size:var(--font-caption); color:var(--text-secondary); }
+        .salary-item .item-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:500; }
         .salary-item .item-input {
             background:transparent; border:none; color:var(--text-primary);
             font-size:var(--font-body); font-weight:600; text-align:center;
@@ -247,7 +266,7 @@
         .modal-hours-row .input-field { flex:1; }
         .btn-save {
             background:var(--accent); border:none; color:#fff; border-radius:var(--radius-sm);
-            padding:12px; font-weight:700; font-size:var(--font-body);
+            padding:12px; font-weight:700; font-size:var(--font-body); cursor:pointer;
         }
 
         .input-field {
@@ -256,13 +275,14 @@
             text-align:center; width:100%; font-family:inherit; outline:none;
             transition:border-color 0.2s; -webkit-appearance:none;
         }
-        .input-field:focus { border-color:var(--accent); }
+        .input-field:focus { border-color: var(--accent); }
 
         .toast-msg {
             position:fixed; bottom:calc(20px + var(--safe-bottom)); left:50%; transform:translateX(-50%);
             background:var(--bg-card-solid); padding:10px 24px; border-radius:50px;
             font-size:var(--font-caption); z-index:200; opacity:0; transition:0.3s;
             box-shadow:var(--shadow); pointer-events:none;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
         .toast-msg.show { opacity:1; bottom:calc(30px + var(--safe-bottom)); }
 
@@ -500,19 +520,19 @@
                 </div>
                 <div class="section-body">
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" fill="none"/><line x1="8" y1="10" x2="16" y2="10" stroke="currentColor"/></svg>正常工时</span>
+                        <span class="detail-label">正常工时</span>
                         <span class="detail-value">${stats.normalTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>加班工时</span>
+                        <span class="detail-label">加班工时</span>
                         <span class="detail-value">${stats.overtimeTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8" fill="currentColor"/></svg>法定节假日工时</span>
+                        <span class="detail-label">法定节假日工时</span>
                         <span class="detail-value">${stats.holidayTotal.toFixed(1)} h</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none"/></svg>满勤工时</span>
+                        <span class="detail-label">满勤工时</span>
                         <span class="detail-value">
                             <span class="editable-full-hours" id="fullHoursWrapper">
                                 <span class="display-text">${fullWorkHours.toFixed(1)} h</span>
@@ -540,11 +560,11 @@
                 </div>
                 <div class="section-body">
                     <div class="overtime-row">
-                        <span class="overtime-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none"/><polyline points="12 6 12 12 16 14" stroke="currentColor" fill="none"/></svg>延时加班费</span>
+                        <span class="overtime-label">延时加班费</span>
                         <span class="overtime-value" id="normalOvertimePayValue">${oRes.normalOvertimePay.toFixed(1)}</span>
                     </div>
                     <div class="overtime-row">
-                        <span class="overtime-label"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" fill="none"/><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor"/><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor"/><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor"/><circle cx="12" cy="15" r="2" stroke="currentColor" fill="none"/></svg>法定节假日加班费</span>
+                        <span class="overtime-label">法定节假日加班费</span>
                         <span class="overtime-value" id="holidayOvertimePayValue">${oRes.holidayOvertimePay.toFixed(1)}</span>
                     </div>
                     <div class="manual-row">
