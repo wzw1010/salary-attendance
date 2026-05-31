@@ -13,6 +13,7 @@
     <style>
         :root {
             --bg-primary: #000000;
+            --bg-card: rgba(255, 255, 255, 0.06);
             --bg-card-solid: #1c1c1e;
             --bg-input: rgba(255, 255, 255, 0.08);
             --border-card: rgba(255, 255, 255, 0.08);
@@ -52,6 +53,7 @@
         @media (prefers-color-scheme: light) {
             :root {
                 --bg-primary: #f2f2f7;
+                --bg-card: rgba(0, 0, 0, 0.04);
                 --bg-card-solid: #ffffff;
                 --bg-input: rgba(0, 0, 0, 0.06);
                 --border-card: rgba(0, 0, 0, 0.08);
@@ -122,8 +124,10 @@
         .scroll-content { padding-top:var(--space-sm); }
 
         .section {
-            background:var(--bg-card-solid); border:1px solid var(--border-card);
-            border-radius:var(--radius-md); margin-bottom:16px; overflow:hidden; box-shadow:var(--shadow);
+            background: var(--bg-card-solid);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border:1px solid var(--border-card); border-radius:var(--radius-md);
+            margin-bottom:16px; overflow:hidden; box-shadow:var(--shadow);
         }
         #salarySection { margin-bottom:33.3px; }
 
@@ -176,14 +180,21 @@
         .detail-label svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.5; }
         .detail-value { font-weight:600; }
 
-        .full-hours-input {
-            background:var(--bg-input); border:1px solid var(--border-input);
-            border-radius:var(--radius-sm); color:var(--text-primary);
-            font-size:var(--font-caption); font-weight:600; font-family:inherit;
-            width:70px; text-align:center; padding:4px 6px;
-            -webkit-appearance:none; outline:none;
+        .editable-full-hours {
+            display: inline-flex; align-items: center; gap: 4px;
+            color: var(--color-hours); cursor: pointer; text-decoration: underline;
+            text-underline-offset: 2px;
         }
-        .full-hours-input:focus { border-color:var(--accent); }
+        .editable-full-hours input {
+            background: transparent; border: none; outline: none;
+            color: var(--color-hours); font-size: inherit; font-weight: inherit;
+            font-family: inherit; width: 60px; text-align: center;
+            -webkit-appearance: none; box-shadow: none;
+            display: none;
+        }
+        .editable-full-hours.editing .display-text { display: none; }
+        .editable-full-hours.editing input { display: inline-block; }
+        .editable-full-hours .edit-icon { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .salary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm); padding:var(--space-sm) 0; }
         .salary-item { background:var(--bg-input); border-radius:var(--radius-sm); padding:var(--space-sm); text-align:center; }
@@ -199,9 +210,10 @@
             aspect-ratio:1/1; background:var(--bg-card-solid); border-radius:var(--radius-sm);
             display:flex; flex-direction:column; align-items:center; justify-content:center;
             cursor:pointer; transition:transform 0.15s; border:1px solid transparent;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
         .cal-day:active { transform:scale(0.94); }
-        .cal-day.empty { background:transparent; pointer-events:none; }
+        .cal-day.empty { background:transparent; backdrop-filter:none; pointer-events:none; }
         .cal-day.work { background:var(--bg-work); border-color:rgba(104,212,170,0.25); }
         .cal-day.night { background:var(--bg-night); border-color:rgba(142,143,255,0.25); }
         .cal-day.rest { background:var(--bg-rest); border-color:rgba(174,174,178,0.25); }
@@ -502,7 +514,11 @@
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none"/></svg>满勤工时</span>
                         <span class="detail-value">
-                            <input type="number" class="full-hours-input" id="fullHoursInput" value="${fullWorkHours}" step="any" inputmode="decimal" style="width:70px;">
+                            <span class="editable-full-hours" id="fullHoursWrapper">
+                                <span class="display-text">${fullWorkHours.toFixed(1)} h</span>
+                                <input type="number" step="any" inputmode="decimal" id="fullHoursInput">
+                                <svg class="edit-icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -622,16 +638,36 @@
     }
 
     function bindDynamicEvents() {
-        const fullInput = $('fullHoursInput');
-        if (fullInput) {
-            fullInput.addEventListener('change', () => {
-                const val = parseFloat(fullInput.value);
+        const fullWrapper = $('fullHoursWrapper');
+        if (fullWrapper) {
+            const display = fullWrapper.querySelector('.display-text');
+            const input = fullWrapper.querySelector('input');
+
+            fullWrapper.addEventListener('click', (e) => {
+                if (fullWrapper.classList.contains('editing')) return;
+                e.stopPropagation();
+                fullWrapper.classList.add('editing');
+                input.value = fullWorkHours;
+                input.focus();
+            });
+
+            const saveFull = () => {
+                const val = parseFloat(input.value);
                 if (!isNaN(val) && val > 0) {
                     fullWorkHours = val;
                     saveFullHours();
                     renderAll();
                 } else {
-                    fullInput.value = fullWorkHours;
+                    input.value = fullWorkHours;
+                }
+                fullWrapper.classList.remove('editing');
+            };
+
+            input.addEventListener('blur', saveFull);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    input.blur();
                 }
             });
         }
