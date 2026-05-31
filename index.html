@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="考勤薪资">
-    <meta name="theme-color" content="#FF9500" id="themeColorMeta">
+    <meta name="theme-color" content="#FF5E3A" id="themeColorMeta">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-512.png">
     <title>考勤·薪资预算</title>
@@ -24,16 +24,18 @@
             --color-hours: #34c759;
             --color-overtime: #5ac8fa;
             --color-salary: #F0B90B;
-            --accent: #F0B90B;
-            --accent-dim: rgba(240, 185, 11, 0.25);
-            --color-work: #7aa9ff;
-            --color-night: #b794f4;
-            --color-rest: #9ca3af;
-            --color-holiday: #fbbf24;
-            --bg-work: rgba(122, 169, 255, 0.25);
-            --bg-night: rgba(183, 148, 244, 0.25);
-            --bg-rest: rgba(156, 163, 175, 0.25);
-            --bg-holiday: rgba(251, 191, 36, 0.25);
+            --accent: #FF5E3A;
+            --accent-dim: rgba(255, 94, 58, 0.3);
+            /* 新班次颜色 */
+            --color-work: #68D4AA;
+            --color-night: #8E8FFF;
+            --color-rest: #AEAEB2;
+            --color-holiday: #FFA040;
+            --bg-work: rgba(104, 212, 170, 0.2);
+            --bg-night: rgba(142, 143, 255, 0.2);
+            --bg-rest: rgba(174, 174, 178, 0.2);
+            --bg-holiday: rgba(255, 160, 64, 0.22);
+
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 20px;
@@ -50,7 +52,6 @@
             --safe-top: env(safe-area-inset-top, 0px);
             --shadow: 0 4px 12px rgba(0,0,0,0.4);
             --header-height: 60px;
-            --header-gradient: linear-gradient(to bottom, #000000 60%, transparent);
         }
         @media (prefers-color-scheme: light) {
             :root {
@@ -64,7 +65,16 @@
                 --text-secondary: rgba(0, 0, 0, 0.55);
                 --text-tertiary: rgba(0, 0, 0, 0.35);
                 --shadow: 0 2px 10px rgba(0,0,0,0.06);
-                --header-gradient: linear-gradient(to bottom, #FF9500 20%, #f2f2f7 100%);
+                --accent: #FF5E3A;
+                --accent-dim: rgba(255, 94, 58, 0.2);
+                --color-work: #34A87A;
+                --color-night: #6A6BDF;
+                --color-rest: #8E8E93;
+                --color-holiday: #F0882A;
+                --bg-work: rgba(104, 212, 170, 0.18);
+                --bg-night: rgba(142, 143, 255, 0.18);
+                --bg-rest: rgba(174, 174, 178, 0.22);
+                --bg-holiday: rgba(255, 160, 64, 0.25);
             }
         }
 
@@ -80,36 +90,71 @@
             overflow-x: hidden;
             padding-top: calc(var(--header-height) + var(--safe-top) + 8px);
             padding-bottom: calc(12px + var(--safe-bottom));
+            position: relative;
         }
-        .app { max-width: 480px; margin:0 auto; padding:0 var(--space-md); }
+
+        /* 橙红渐变背景层 (延伸到中下部) */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65vh;
+            z-index: 0;
+            pointer-events: none;
+            background: linear-gradient(to bottom, #FF5E3A 0%, rgba(255, 94, 58, 0.35) 40%, transparent 85%);
+        }
+        @media (prefers-color-scheme: light) {
+            .gradient-bg {
+                background: linear-gradient(to bottom, #FF6B44 0%, rgba(255, 107, 68, 0.25) 45%, transparent 85%);
+            }
+        }
+
+        .app { max-width: 480px; margin:0 auto; padding:0 var(--space-md); position: relative; z-index: 1; }
 
         .nav-header {
             position: fixed; top: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; z-index: 10;
             padding: calc(var(--safe-top) + 10px) var(--space-md) 12px;
             display: flex; align-items: center; gap: var(--space-sm);
-            background: var(--header-gradient);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            background: transparent;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             min-height: var(--header-height);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: auto;
+            min-width: 0;
         }
         .header-title {
             font-weight: 700; font-size: var(--font-title); color: var(--text-primary);
-            white-space: nowrap; margin-right: auto; margin-left: 0.3em;
+            white-space: nowrap;
         }
-        .month-control { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .month-control { display: flex; align-items: center; gap: 4px; }
         .month-arrow {
-            width:32px; height:32px; display: flex; align-items:center; justify-content:center;
-            background: var(--bg-input); border-radius:var(--radius-full);
-            cursor:pointer; font-size:14px; color:var(--text-secondary); border:none;
+            width:28px; height:28px; display: flex; align-items:center; justify-content:center;
+            background: rgba(255,255,255,0.12); border-radius:var(--radius-full);
+            cursor:pointer; font-size:13px; color:var(--text-secondary); border:none;
             transition:background 0.2s;
         }
-        .month-arrow:active { background: rgba(128,128,128,0.2); }
+        .month-arrow:active { background: rgba(255,255,255,0.2); }
         .month-indicator {
-            width:28px; height:28px; border-radius:var(--radius-full);
-            background: var(--bg-input); display:flex; align-items:center; justify-content:center;
-            font-size:11px; font-weight:600; color: var(--text-secondary);
+            width:26px; height:26px; border-radius:var(--radius-full);
+            background: rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center;
+            font-size:10px; font-weight:600; color: var(--text-secondary);
             pointer-events:none;
         }
+        .clear-btn {
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.12); border-radius: var(--radius-full);
+            border: none; cursor: pointer; color: var(--text-secondary);
+            transition: background 0.2s;
+        }
+        .clear-btn:active { background: rgba(255,255,255,0.2); }
+        .clear-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
 
         .scroll-content { padding-top: var(--space-sm); }
 
@@ -186,7 +231,8 @@
         .detail-label { color: var(--text-secondary); display:flex; align-items:center; gap:6px; }
         .detail-label svg { width:14px; height:14px; stroke: currentColor; fill:none; stroke-width:1.5; }
         .detail-value { font-weight:600; color: var(--text-primary); }
-        .editable { color: var(--color-hours); cursor:pointer; text-decoration:underline; text-underline-offset:2px; }
+        .editable { color: var(--color-hours); cursor:pointer; display: inline-flex; align-items: center; gap: 4px; }
+        .editable svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .salary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm); padding: var(--space-sm) 0; }
         .salary-item {
@@ -213,8 +259,10 @@
         .cal-day.empty { background:transparent; box-shadow:none; pointer-events:none; }
         .cal-day.today { border-color: var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
         .cal-day.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
-        .cal-day.work { background:var(--bg-work); } .cal-day.night { background:var(--bg-night); }
-        .cal-day.rest { background:var(--bg-rest); } .cal-day.holiday { background:var(--bg-holiday); }
+        .cal-day.work { background:var(--bg-work); border-color: rgba(104,212,170,0.25); }
+        .cal-day.night { background:var(--bg-night); border-color: rgba(142,143,255,0.25); }
+        .cal-day.rest { background:var(--bg-rest); border-color: rgba(174,174,178,0.25); }
+        .cal-day.holiday { background:var(--bg-holiday); border-color: rgba(255,160,64,0.3); }
         .day-number { font-size:var(--font-body); font-weight:600; }
         .day-label { font-size:9px; font-weight:600; color:var(--text-secondary); margin-top:1px; }
 
@@ -242,11 +290,11 @@
         }
         .shift-option-big svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; }
         .shift-option-big .shift-text { font-size:10px; font-weight:600; }
-        .shift-option-big.active { background:var(--accent); color:#000; border-color:var(--accent); }
+        .shift-option-big.active { background:var(--accent); color:#fff; border-color:var(--accent); }
         .modal-hours-row { display:flex; gap:8px; align-items:center; }
         .modal-hours-row .input-field { flex:1; }
         .btn-save {
-            background:var(--accent); border:none; color:#000; border-radius:var(--radius-sm);
+            background:var(--accent); border:none; color:#fff; border-radius:var(--radius-sm);
             padding:12px 20px; font-weight:700; font-size:var(--font-body); cursor:pointer;
         }
 
@@ -259,24 +307,33 @@
         .input-field:focus { border-color: var(--accent); }
 
         .toast-msg {
-            position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+            position:fixed; bottom: calc(20px + var(--safe-bottom)); left:50%; transform:translateX(-50%);
             background:var(--bg-card-solid); padding:10px 24px; border-radius:50px;
             font-size:var(--font-caption); z-index:200; opacity:0; transition:0.3s;
             box-shadow:var(--shadow); pointer-events:none;
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
-        .toast-msg.show { opacity:1; bottom:30px; }
+        .toast-msg.show { opacity:1; bottom: calc(30px + var(--safe-bottom)); }
+
+        .calendar-section { transition: opacity 0.25s; }
+        .calendar-section.hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
+<div class="gradient-bg"></div>
 <div class="app">
     <div class="nav-header">
-        <span class="header-title">考勤·薪资预算</span>
-        <div class="month-control">
-            <button class="month-arrow" id="prevMonthBtn" aria-label="上个月">◀</button>
-            <span class="month-indicator" id="monthIndicator"></span>
-            <button class="month-arrow" id="nextMonthBtn" aria-label="下个月">▶</button>
+        <div class="header-title-group">
+            <span class="header-title">考勤·薪资预算</span>
+            <div class="month-control">
+                <button class="month-arrow" id="prevMonthBtn" aria-label="上个月">◀</button>
+                <span class="month-indicator" id="monthIndicator"></span>
+                <button class="month-arrow" id="nextMonthBtn" aria-label="下个月">▶</button>
+            </div>
         </div>
+        <button class="clear-btn" id="clearDataBtn" aria-label="清空当月数据">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        </button>
     </div>
 
     <div class="scroll-content" id="scrollContent">
@@ -305,8 +362,8 @@
             </button>
         </div>
         <div class="modal-hours-row">
-            <input type="number" class="input-field" id="modalNormal" step="0.5" placeholder="正常工时" inputmode="decimal">
-            <input type="number" class="input-field" id="modalOvertime" step="0.5" placeholder="加班工时" inputmode="decimal">
+            <input type="number" class="input-field" id="modalNormal" step="any" placeholder="正常工时" inputmode="decimal">
+            <input type="number" class="input-field" id="modalOvertime" step="any" placeholder="加班工时" inputmode="decimal">
         </div>
         <button class="btn-save" id="modalSaveBtn">保存</button>
     </div>
@@ -354,6 +411,10 @@
         if(data.length > days) data.length = days;
     }
     function saveData(){ localStorage.setItem(getKey(), JSON.stringify({year,month,rows:data})); }
+    function clearAllData(){
+        data = Array(getDays(year, month)).fill(null).map(() => ({shift:'', normal:0, overtime:0}));
+        saveData();
+    }
     function loadSalaryConfig(){
         try{ const s = localStorage.getItem(SALARY_STORAGE); if(s) salaryConfig = JSON.parse(s); }catch(e){}
         salaryConfig = { baseSalary:0,performance:0,otherDeduction:0,otherAllowance:0,insuranceDeduction:0,personalTax:0,manualOvertimePay:null,rentDeduction:0,mealFeeDeduction:0,highTempAllowance:0,seniorityAllowance:0,nightAllowanceManual:null, ...salaryConfig };
@@ -399,7 +460,9 @@
     function computeSalary(){
         const oRes = computeOvertimeSalary();
         const stats = computeWorkStats();
-        const meal = (stats.total + stats.holidayTotal) * 1;
+        // 餐补：直接累加所有正常+加班工时（包括法定）
+        const totalAllHours = data.reduce((sum, d) => sum + (d.normal||0) + (d.overtime||0), 0);
+        const meal = totalAllHours * 1;
         const nightCount = data.filter(d => d.shift === 'night').length;
         const autoNight = nightCount * 30;
         const nightAllow = salaryConfig.nightAllowanceManual !== null ? salaryConfig.nightAllowanceManual : autoNight;
@@ -423,8 +486,7 @@
 
     function closeModal(){
         modalOverlay.classList.remove('show');
-        if(document.activeElement) document.activeElement.blur();
-        document.body.focus();
+        if(document.activeElement) document.activeElement.blur?.();
     }
 
     function saveModal(){
@@ -451,10 +513,28 @@
         showToast(`已设为${ {work:'白班',night:'夜班',rest:'休息',holiday:'法定'}[shift] }`);
     }
 
+    function updateCalendarVisibility() {
+        const expandedSections = document.querySelectorAll('.section.expanded');
+        const calendarSection = document.getElementById('calendarArea');
+        if (calendarSection) {
+            if (expandedSections.length > 0) {
+                calendarSection.classList.add('hidden');
+            } else {
+                calendarSection.classList.remove('hidden');
+            }
+        }
+    }
+
     function renderAll(){
         const daysInMonth = getDays(year, month);
+        // 不再在 renderAll 中修改 selectedDay，依赖 changeMonth 初始化
         if (selectedDay === null || selectedDay < 0 || selectedDay >= daysInMonth) {
-            selectedDay = Math.max(0, Math.min(daysInMonth - 1, new Date().getDate() - 1));
+            const today = new Date();
+            if (today.getFullYear() === year && today.getMonth()+1 === month) {
+                selectedDay = today.getDate() - 1;
+            } else {
+                selectedDay = 0;
+            }
         }
         const stats = computeWorkStats();
         const pct = fullWorkHours > 0 ? Math.min(100, (stats.total / fullWorkHours)*100) : 0;
@@ -496,7 +576,7 @@
                     </div>
                     <div class="detail-row">
                         <span class="detail-label"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none"/></svg>满勤工时</span>
-                        <span class="detail-value editable" id="fullHoursDisplay">${fullWorkHours.toFixed(1)} h</span>
+                        <span class="detail-value editable" id="fullHoursDisplay">${fullWorkHours.toFixed(1)} h <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
                     </div>
                 </div>
             </div>
@@ -526,7 +606,7 @@
                     </div>
                     <div class="manual-row">
                         <span style="font-size:var(--font-caption); color:var(--text-secondary);">手动更正</span>
-                        <input class="input-field" id="manualOvertime" value="${salaryConfig.manualOvertimePay??''}" step="10" placeholder="自动" inputmode="decimal" style="flex:1;">
+                        <input class="input-field" id="manualOvertime" value="${salaryConfig.manualOvertimePay??''}" placeholder="${oRes.autoOvertimePay.toFixed(1)}" step="any" inputmode="decimal" style="flex:1;">
                         <button id="resetOvertimeBtn" style="background:var(--bg-input); border:1px solid var(--border-input); padding:4px 10px; border-radius:var(--radius-sm); font-size:var(--font-caption); color:var(--text-primary);">重置</button>
                     </div>
                 </div>
@@ -546,27 +626,28 @@
                 </div>
                 <div class="section-body">
                     <div class="salary-grid">
-                        <div class="salary-item"><span class="item-label">底薪</span><input class="item-input" id="baseSalary" value="${salaryConfig.baseSalary}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">绩效</span><input class="item-input" id="performance" value="${salaryConfig.performance}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">其它扣款</span><input class="item-input" id="otherDeduction" value="${salaryConfig.otherDeduction}" step="50" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">其它补贴</span><input class="item-input" id="otherAllowance" value="${salaryConfig.otherAllowance}" step="50" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">五险一金</span><input class="item-input" id="insurance" value="${salaryConfig.insuranceDeduction}" step="100" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">个人所得税</span><input class="item-input" id="tax" value="${salaryConfig.personalTax}" step="100" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">底薪</span><input class="item-input" id="baseSalary" value="${salaryConfig.baseSalary}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">绩效</span><input class="item-input" id="performance" value="${salaryConfig.performance}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">其它扣款</span><input class="item-input" id="otherDeduction" value="${salaryConfig.otherDeduction}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">其它补贴</span><input class="item-input" id="otherAllowance" value="${salaryConfig.otherAllowance}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">五险一金</span><input class="item-input" id="insurance" value="${salaryConfig.insuranceDeduction}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">个人所得税</span><input class="item-input" id="tax" value="${salaryConfig.personalTax}" step="any" inputmode="decimal"></div>
                         <div class="salary-item"><span class="item-label">餐补(自动)</span><input class="item-input" id="meal" value="${sal.meal.toFixed(1)}" readonly></div>
-                        <div class="salary-item"><span class="item-label">夜班补贴</span><input class="item-input" id="nightAllow" value="${sal.nightAllow.toFixed(1)}" step="10" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">房租水电</span><input class="item-input" id="rent" value="${salaryConfig.rentDeduction}" step="50" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">用餐费</span><input class="item-input" id="mealFee" value="${salaryConfig.mealFeeDeduction}" step="50" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">高温补贴</span><input class="item-input" id="highTemp" value="${salaryConfig.highTempAllowance}" step="50" inputmode="decimal"></div>
-                        <div class="salary-item"><span class="item-label">工龄补贴</span><input class="item-input" id="seniority" value="${salaryConfig.seniorityAllowance}" step="50" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">夜班补贴</span><input class="item-input" id="nightAllow" value="${sal.nightAllow.toFixed(1)}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">房租水电</span><input class="item-input" id="rent" value="${salaryConfig.rentDeduction}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">用餐费</span><input class="item-input" id="mealFee" value="${salaryConfig.mealFeeDeduction}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">高温补贴</span><input class="item-input" id="highTemp" value="${salaryConfig.highTempAllowance}" step="any" inputmode="decimal"></div>
+                        <div class="salary-item"><span class="item-label">工龄补贴</span><input class="item-input" id="seniority" value="${salaryConfig.seniorityAllowance}" step="any" inputmode="decimal"></div>
                     </div>
                 </div>
             </div>
 
-            <div id="calendarArea" style="padding:0 var(--space-md);"></div>
+            <div id="calendarArea" class="calendar-section"></div>
         `;
 
         renderCalendar();
         bindDynamicEvents();
+        updateCalendarVisibility();
     }
 
     function renderCalendar(){
@@ -592,31 +673,37 @@
         calArea.innerHTML = html;
     }
 
-    // 只绑定一次的静态事件（委托）
     function bindStaticEvents() {
-        // 卡片展开折叠委托
         cardsWrapper.addEventListener('pointerdown', (e) => {
             const toggleBtn = e.target.closest('[data-toggle]');
             if(!toggleBtn) return;
             if(e.target.closest('input') || e.target.closest('button')) return;
             e.preventDefault();
-            toggleBtn.closest('.section').classList.toggle('expanded');
+            const section = toggleBtn.closest('.section');
+            section.classList.toggle('expanded');
+            updateCalendarVisibility();
         });
 
-        // 模态框内班次选择
         document.querySelectorAll('#modalShiftSelector .shift-option-big').forEach(b => {
             b.addEventListener('click', ()=> setShiftFromModal(b.dataset.shift));
         });
-        document.getElementById('modalSaveBtn').addEventListener('click', saveModal);
+        $('modalSaveBtn').addEventListener('click', saveModal);
         modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) closeModal(); });
 
-        document.getElementById('prevMonthBtn').addEventListener('click', ()=> changeMonth(-1));
-        document.getElementById('nextMonthBtn').addEventListener('click', ()=> changeMonth(1));
+        $('prevMonthBtn').addEventListener('click', ()=> changeMonth(-1));
+        $('nextMonthBtn').addEventListener('click', ()=> changeMonth(1));
+
+        $('clearDataBtn').addEventListener('click', ()=>{
+            if(confirm('确认清空当月所有排班与工时数据？此操作不可恢复。')){
+                clearAllData();
+                renderAll();
+                showToast('当月数据已清空');
+            }
+        });
     }
 
-    // 每次渲染后绑定动态元素事件
     function bindDynamicEvents() {
-        const fullEl = document.getElementById('fullHoursDisplay');
+        const fullEl = $('fullHoursDisplay');
         fullEl?.addEventListener('click', (e)=>{
             e.stopPropagation();
             const val = prompt('输入本月满勤工时', fullWorkHours);
@@ -626,7 +713,7 @@
             }
         });
 
-        const calendarArea = document.getElementById('calendarArea');
+        const calendarArea = $('calendarArea');
         calendarArea?.addEventListener('click', (e) => {
             const dayEl = e.target.closest('.cal-day:not(.empty)');
             if(!dayEl) return;
@@ -637,7 +724,7 @@
         });
 
         const bindChange = (id, setter) => {
-            const el = document.getElementById(id); if(!el) return;
+            const el = $(id); if(!el) return;
             el.addEventListener('change', ()=>{ setter(parseFloat(el.value)||0); saveSalaryConfig(); updateSalaryDisplay(); });
         };
         bindChange('baseSalary', v=>salaryConfig.baseSalary=v);
@@ -651,7 +738,7 @@
         bindChange('highTemp', v=>salaryConfig.highTempAllowance=v);
         bindChange('seniority', v=>salaryConfig.seniorityAllowance=v);
 
-        const nightEl = document.getElementById('nightAllow');
+        const nightEl = $('nightAllow');
         nightEl?.addEventListener('change', function(){
             const v = this.value.trim();
             const num = parseFloat(v);
@@ -659,14 +746,14 @@
             saveSalaryConfig(); updateSalaryDisplay();
         });
 
-        const manualEl = document.getElementById('manualOvertime');
+        const manualEl = $('manualOvertime');
         manualEl?.addEventListener('change', function(){
             const v = this.value.trim();
             const num = parseFloat(v);
             salaryConfig.manualOvertimePay = (v === '' || isNaN(num)) ? null : num;
             saveSalaryConfig(); updateSalaryDisplay();
         });
-        document.getElementById('resetOvertimeBtn')?.addEventListener('click', ()=>{
+        $('resetOvertimeBtn')?.addEventListener('click', ()=>{
             salaryConfig.manualOvertimePay = null;
             saveSalaryConfig(); updateSalaryDisplay();
         });
@@ -676,23 +763,23 @@
         const sal = computeSalary();
         const oRes = sal.overtimeRes;
 
-        const netEl = document.getElementById('netSalaryValue');
+        const netEl = $('netSalaryValue');
         if(netEl) netEl.textContent = sal.net.toFixed(1);
         const grossEl = document.querySelector('#salarySection .stat-left span:last-child');
         if(grossEl) grossEl.textContent = `应发 ${sal.gross.toFixed(1)}`;
-        const mealEl = document.getElementById('meal');
+        const mealEl = $('meal');
         if(mealEl) mealEl.value = sal.meal.toFixed(1);
-        const nightEl = document.getElementById('nightAllow');
+        const nightEl = $('nightAllow');
         if(nightEl && salaryConfig.nightAllowanceManual===null) nightEl.value = sal.autoNight.toFixed(1);
 
-        const otTotal = document.getElementById('overtimePayTotal');
+        const otTotal = $('overtimePayTotal');
         if(otTotal) otTotal.textContent = oRes.finalOvertimePay.toFixed(1);
-        const otSub = document.getElementById('overtimePaySub');
+        const otSub = $('overtimePaySub');
         if(otSub) otSub.innerHTML = `${salaryConfig.manualOvertimePay !== null ? '手动 ' : ''}延时 ${oRes.normalOvertimePay.toFixed(1)} | 法定 ${oRes.holidayOvertimePay.toFixed(1)}`;
 
-        const normalPayVal = document.getElementById('normalOvertimePayValue');
+        const normalPayVal = $('normalOvertimePayValue');
         if(normalPayVal) normalPayVal.textContent = oRes.normalOvertimePay.toFixed(1);
-        const holidayPayVal = document.getElementById('holidayOvertimePayValue');
+        const holidayPayVal = $('holidayOvertimePayValue');
         if(holidayPayVal) holidayPayVal.textContent = oRes.holidayOvertimePay.toFixed(1);
     }
 
@@ -703,25 +790,31 @@
         year = ny; month = nm;
         loadData();
         const max = getDays(year,month);
-        if(selectedDay !== null && selectedDay >= max) selectedDay = max-1;
+        if (selectedDay == null || selectedDay < 0 || selectedDay >= max) {
+            const today = new Date();
+            if (today.getFullYear() === year && today.getMonth()+1 === month) {
+                selectedDay = today.getDate() - 1;
+            } else {
+                selectedDay = 0;
+            }
+        }
         closeModal();
         renderAll();
     }
 
     function updateThemeColor(){
         const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        themeMeta.setAttribute('content', isLight ? '#FF9500' : '#000000');
+        themeMeta.setAttribute('content', isLight ? '#FF6B44' : '#FF5E3A');
     }
     updateThemeColor();
     window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateThemeColor);
 
-    // 初始化
     const now = new Date();
     year = now.getFullYear(); month = now.getMonth()+1;
     selectedDay = now.getDate()-1;
     loadData(); loadSalaryConfig(); loadFullHours();
-    bindStaticEvents();   // 只绑定一次
-    renderAll();          // 首次渲染
+    bindStaticEvents();
+    renderAll();
 })();
 </script>
 </body>
