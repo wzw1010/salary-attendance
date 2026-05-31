@@ -12,7 +12,7 @@
     <title>考勤·薪资预算</title>
     <style>
         :root {
-            --bg-primary: #0A0A0C;  /* 微暖黑，代替纯黑 */
+            --bg-primary: #0A0A0C;
             --bg-card-solid: #1c1c1e;
             --bg-input: rgba(255, 255, 255, 0.08);
             --border-card: rgba(255, 255, 255, 0.08);
@@ -86,29 +86,30 @@
             position: relative;
         }
 
-        /* 径向渐变光晕层：模拟健康 App 顶部柔和漫射光 */
+        /* 线性渐变背景层：顶部最深，向下平滑过渡 */
         .gradient-bg {
             position: fixed; top:0; left:0; width:100%; height:100vh; z-index:0;
             pointer-events: none;
-            /* 深色模式：从顶部中央向下扩散的极淡橙红光 */
-            background: radial-gradient(
-                ellipse at 50% 10%,
-                rgba(255,107,68,0.18) 0%,
-                rgba(255,94,58,0.08) 30%,
-                rgba(255,94,58,0.03) 60%,
-                transparent 100%
-            );
+            /* 深色模式：顶部柔和橙红，向下逐步衰减至透明 */
+            background: linear-gradient(
+    to bottom,
+    rgba(255,107,53,0.40) 0%,      /* 纯正橘色，较浓 */
+    rgba(255,107,53,0.20) 25%,
+    rgba(255,107,53,0.06) 50%,
+    rgba(255,107,53,0.02) 75%,
+    transparent 100%
+);
         }
         @media (prefers-color-scheme: light) {
             .gradient-bg {
-                /* 浅色模式：稍亮一些，但仍保持柔和克制 */
-                background: radial-gradient(
-                    ellipse at 50% 10%,
-                    rgba(255,107,68,0.22) 0%,
-                    rgba(255,107,68,0.10) 35%,
-                    rgba(255,107,68,0.04) 65%,
-                    transparent 100%
-                );
+                background: linear-gradient(
+    to bottom,
+    rgba(255,107,53,0.35) 0%,
+    rgba(255,107,53,0.18) 30%,
+    rgba(255,107,53,0.08) 55%,
+    rgba(255,107,53,0.03) 80%,
+    transparent 100%
+);
             }
         }
 
@@ -121,7 +122,6 @@
             background: transparent;
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             min-height: var(--header-height);
-            /* 无分割线 */
         }
         .header-title-group { display:flex; align-items:center; gap:8px; margin-right:auto; }
         .header-title { font-weight:700; font-size:var(--font-title); color:var(--text-primary); white-space: nowrap; }
