@@ -13,7 +13,7 @@
     <style>
         :root {
             --bg-primary: #0A0A0C;
-            --bg-card-solid: #1c1c1e;
+            --bg-card-solid: rgba(255, 255, 255, 0.08);
             --bg-input: rgba(255, 255, 255, 0.08);
             --border-card: rgba(255, 255, 255, 0.08);
             --border-input: rgba(255, 255, 255, 0.12);
@@ -49,10 +49,34 @@
             --shadow: 0 4px 12px rgba(0,0,0,0.4);
             --header-height: 60px;
         }
+
+        /* 浅色强制 */
+        [data-theme="light"] {
+            --bg-primary: #f2f2f7;
+            --bg-card-solid: rgba(255, 255, 255, 0.72);
+            --bg-input: rgba(0, 0, 0, 0.06);
+            --border-card: rgba(0, 0, 0, 0.08);
+            --border-input: rgba(0, 0, 0, 0.12);
+            --text-primary: #000000;
+            --text-secondary: rgba(0, 0, 0, 0.55);
+            --text-tertiary: rgba(0, 0, 0, 0.35);
+            --accent: #FF5E3A;
+            --color-work: #34A87A;
+            --color-night: #6A6BDF;
+            --color-rest: #8E8E93;
+            --color-holiday: #F0882A;
+            --bg-work: rgba(104, 212, 170, 0.18);
+            --bg-night: rgba(142, 143, 255, 0.18);
+            --bg-rest: rgba(174, 174, 178, 0.22);
+            --bg-holiday: rgba(255, 160, 64, 0.25);
+            --shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        /* 系统浅色作为兜底（无data-theme属性时） */
         @media (prefers-color-scheme: light) {
-            :root {
+            :root:not([data-theme="dark"]) {
                 --bg-primary: #f2f2f7;
-                --bg-card-solid: #ffffff;
+                --bg-card-solid: rgba(255, 255, 255, 0.72);
                 --bg-input: rgba(0, 0, 0, 0.06);
                 --border-card: rgba(0, 0, 0, 0.08);
                 --border-input: rgba(0, 0, 0, 0.12);
@@ -86,31 +110,6 @@
             position: relative;
         }
 
-        .gradient-bg {
-            position: fixed; top:0; left:0; width:100%; height:100vh; z-index:0;
-            pointer-events: none;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,107,53,0.40) 0%,
-                rgba(255,107,53,0.20) 25%,
-                rgba(255,107,53,0.06) 50%,
-                rgba(255,107,53,0.02) 75%,
-                transparent 100%
-            );
-        }
-        @media (prefers-color-scheme: light) {
-            .gradient-bg {
-                background: linear-gradient(
-                    to bottom,
-                    rgba(255,107,53,0.35) 0%,
-                    rgba(255,107,53,0.18) 30%,
-                    rgba(255,107,53,0.08) 55%,
-                    rgba(255,107,53,0.03) 80%,
-                    transparent 100%
-                );
-            }
-        }
-
         .app { max-width:480px; margin:0 auto; padding:0 var(--space-md); position:relative; z-index:1; }
 
         .nav-header {
@@ -123,19 +122,7 @@
         }
         .header-title-group { display:flex; align-items:center; gap:8px; margin-right:auto; }
         .header-title { font-weight:700; font-size:var(--font-title); color:var(--text-primary); white-space: nowrap; }
-        .month-indicator-circle {
-            width:28px; height:28px; border-radius:50%;
-            background: rgba(255,255,255,0.12);
-            border: 0.5px solid rgba(255,255,255,0.2);
-            display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600;
-            color:var(--text-secondary); pointer-events:none;
-        }
-        @media (prefers-color-scheme: light) {
-            .month-indicator-circle {
-                background: rgba(0,0,0,0.06);
-                border-color: rgba(0,0,0,0.15);
-            }
-        }
+
         .nav-actions { display:flex; align-items:center; gap:4px; position: relative; }
         .month-arrow, .more-btn {
             width:30px; height:30px; display:flex; align-items:center; justify-content:center;
@@ -146,79 +133,55 @@
             backdrop-filter: blur(10px);
         }
         .month-arrow:active, .more-btn:active { background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.3); }
+        [data-theme="light"] .month-arrow, [data-theme="light"] .more-btn {
+            background:rgba(0,0,0,0.05);
+            border-color:rgba(0,0,0,0.12);
+            color: #333;
+        }
+        [data-theme="light"] .month-arrow:active, [data-theme="light"] .more-btn:active {
+            background:rgba(0,0,0,0.1);
+        }
         @media (prefers-color-scheme: light) {
-            .month-arrow, .more-btn {
+            :root:not([data-theme="dark"]) .month-arrow,
+            :root:not([data-theme="dark"]) .more-btn {
                 background:rgba(0,0,0,0.05);
                 border-color:rgba(0,0,0,0.12);
                 color: #333;
             }
-            .month-arrow:active, .more-btn:active {
+            :root:not([data-theme="dark"]) .month-arrow:active,
+            :root:not([data-theme="dark"]) .more-btn:active {
                 background:rgba(0,0,0,0.1);
             }
         }
         .more-btn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; }
 
         .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 6px;
+            position: absolute; top: 100%; right: 0; margin-top: 6px;
             background: var(--bg-card-solid);
             border: 1px solid var(--border-card);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 4px;
-            display: none;
-            flex-direction: column;
-            min-width: 145px;
-            z-index: 20;
+            border-radius: var(--radius-sm); box-shadow: var(--shadow);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            padding: 4px; display: none; flex-direction: column; min-width: 155px; z-index: 20;
         }
-        .dropdown-menu.show {
-            display: flex;
-        }
+        .dropdown-menu.show { display: flex; }
         .dropdown-menu button {
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            padding: 8px 12px;
-            text-align: left;
-            font-size: var(--font-caption);
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
+            background: transparent; border: none; color: var(--text-primary);
+            padding: 8px 12px; text-align: left; font-size: var(--font-caption);
+            font-weight: 500; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;
         }
-        .dropdown-menu button:active {
-            background: var(--bg-input);
-        }
-        .dropdown-menu button svg {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-        }
+        .dropdown-menu button:active { background: var(--bg-input); }
+        .dropdown-menu button svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .scroll-content { padding-top:var(--space-sm); }
 
         .section {
             background: var(--bg-card-solid);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border:1px solid var(--border-card);
-            border-radius:var(--radius-md);
-            margin-bottom:16px; overflow:hidden;
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border:1px solid var(--border-card); border-radius:var(--radius-md); margin-bottom:16px; overflow:hidden;
             box-shadow:var(--shadow);
         }
-        #salarySection { margin-bottom:16px; }
-
         .section-header {
-            display:flex; align-items:center; gap:var(--space-sm);
-            padding:var(--space-md); cursor:pointer;
+            display:flex; align-items:center; gap:var(--space-sm); padding:var(--space-md); cursor:pointer;
         }
         .section-header:active { background:var(--bg-input); }
         .section-body { display:none; padding:0 var(--space-md) var(--space-md); }
@@ -227,8 +190,7 @@
         .section.expanded .section-header { border-bottom:1px solid var(--border-card); }
 
         .stat-header {
-            display:flex; align-items:center; gap:var(--space-sm);
-            padding:var(--space-md); cursor:pointer;
+            display:flex; align-items:center; gap:var(--space-sm); padding:var(--space-md); cursor:pointer;
         }
         .stat-left { display:flex; flex-direction:column; gap:2px; flex:1; }
         .stat-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.3px; }
@@ -237,6 +199,7 @@
         .stat-icon, .progress-ring { width:44px; height:44px; }
         .progress-ring circle { fill:none; stroke-width:5; stroke-linecap:round; }
         .ring-bg { stroke:rgba(128,128,128,0.15); }
+        .progress-ring text { fill: var(--text-primary); font-family: -apple-system, sans-serif; }
 
         #workHoursSection .stat-value { color: var(--color-hours); }
         #workHoursSection .ring-fill { stroke: var(--color-hours); }
@@ -251,9 +214,6 @@
         .overtime-label { color:var(--text-secondary); display:flex; align-items:center; gap:6px; }
         .overtime-label svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.5; }
         .overtime-value { font-weight:600; }
-
-        .manual-row { display:flex; align-items:center; gap:8px; padding-top:10px; }
-        .manual-row .input-field { height:36px; font-size:var(--font-body); }
 
         .detail-row {
             display:flex; align-items:center; justify-content:space-between;
@@ -273,8 +233,7 @@
             background: transparent; border: none; outline: none;
             color: var(--color-hours); font-size: inherit; font-weight: inherit;
             font-family: inherit; width: 60px; text-align: center;
-            -webkit-appearance: none; box-shadow: none;
-            display: none;
+            -webkit-appearance: none; box-shadow: none; display: none;
         }
         .editable-full-hours.editing .display-text,
         .editable-manual-overtime.editing .display-text { display: none; }
@@ -291,13 +250,13 @@
             display: inline-flex; align-items: center; justify-content: center;
             color: var(--text-secondary); margin-left: 4px;
         }
-        .reset-icon-btn svg {
-            width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2;
-        }
+        .reset-icon-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         .salary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-sm); padding:var(--space-sm) 0; }
         .salary-item { background:var(--bg-input); border-radius:var(--radius-sm); padding:var(--space-sm); text-align:center; }
-        .salary-item .item-label { font-size:var(--font-caption); color:var(--text-secondary); font-weight:500; }
+        .salary-item .item-label {
+            font-size:11px; color:var(--text-secondary);
+        }
         .salary-item .item-input {
             background:transparent; border:none; color:var(--text-primary);
             font-size:var(--font-body); font-weight:600; text-align:center;
@@ -331,6 +290,7 @@
             border-radius:var(--radius-lg); padding:var(--space-lg); box-shadow:var(--shadow);
             display:flex; flex-direction:column; gap:var(--space-md);
             transform:scale(0.9); transition:transform 0.35s; border:1px solid var(--border-card);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
         }
         .modal-overlay.show .modal-content { transform:scale(1); }
         .modal-shift-selector { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-xs); }
@@ -370,42 +330,41 @@
         .calendar-section.hidden { opacity:0; pointer-events:none; }
 
         @media print {
-            body { padding-top: 0 !important; background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .nav-header, .gradient-bg, .modal-overlay, .toast-msg, .month-arrow, .more-btn, .dropdown-menu, .chevron { display: none !important; }
-            .app { max-width: 100%; padding: 0 10px; }
-            .section { box-shadow: none; border: 1px solid #ccc; background: white !important; break-inside: avoid; }
-            .stat-value, .detail-value, .overtime-value { color: black !important; }
-            .stat-label, .detail-label, .overtime-label { color: #555 !important; }
-            .cal-day { background: #f0f0f0 !important; border: 1px solid #ddd !important; color: black !important; }
-            .cal-day.work { background: #d4edda !important; }
-            .cal-day.night { background: #d1d4ff !important; }
-            .cal-day.rest { background: #e2e2e2 !important; }
-            .cal-day.holiday { background: #ffe5cc !important; }
+            body { padding-top:0!important; background:white!important; color:black!important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+            .nav-header, .gradient-bg, .modal-overlay, .toast-msg, .month-arrow, .more-btn, .dropdown-menu, .chevron { display:none!important; }
+            .app { max-width:100%; padding:0 10px; }
+            .section { box-shadow:none; border:1px solid #ccc; background:white!important; break-inside:avoid; }
+            .stat-value, .detail-value, .overtime-value { color:black!important; }
+            .stat-label, .detail-label, .overtime-label { color:#555!important; }
+            .cal-day { background:#f0f0f0!important; border:1px solid #ddd!important; color:black!important; }
+            .cal-day.work { background:#d4edda!important; }
+            .cal-day.night { background:#d1d4ff!important; }
+            .cal-day.rest { background:#e2e2e2!important; }
+            .cal-day.holiday { background:#ffe5cc!important; }
+            .progress-ring text { fill: #000; }
         }
     </style>
 </head>
 <body>
-<div class="gradient-bg"></div>
 <div class="app">
     <div class="nav-header">
         <div class="header-title-group">
             <span class="header-title">考勤·薪资预算</span>
-            <span class="month-indicator-circle" id="monthIndicator"></span>
         </div>
         <div class="nav-actions">
             <button class="month-arrow" id="prevMonthBtn" aria-label="上个月">◀</button>
             <button class="month-arrow" id="nextMonthBtn" aria-label="下个月">▶</button>
             <button class="more-btn" id="moreBtn" aria-label="更多操作">
                 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
-                    <circle cx="12" cy="5" r="1.5"/>
-                    <circle cx="12" cy="12" r="1.5"/>
-                    <circle cx="12" cy="19" r="1.5"/>
+                    <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
                 </svg>
             </button>
             <div class="dropdown-menu" id="dropdownMenu">
-                <button id="menuExportPdf">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    导出 PDF
+                <button id="switchThemeBtn">
+                    <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                    <span id="themeBtnText">浅色模式</span>
                 </button>
                 <button id="menuExportBackup">
                     <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -460,9 +419,10 @@
 <script>
 (function(){
     const STORAGE_PREFIX = 'wh_v53_';
+    const SALARY_PREFIX = 'sc_v45_';
     const DEF_NORMAL = 8, DEF_OVERTIME = 4;
-    const SALARY_STORAGE = 'sc_v44';
     const FULL_HOURS_KEY = 'fh_v35';
+    const THEME_KEY = 'theme_pref';
 
     let year, month, data = [];
     let selectedDay = null;
@@ -490,6 +450,7 @@
     const getDays = (y,m) => new Date(y,m,0).getDate();
     const getFirstDay = (y,m) => new Date(y,m-1,1).getDay();
     const getKey = () => STORAGE_PREFIX + year + '_' + month;
+    const getSalaryKey = () => SALARY_PREFIX + year + '_' + month;
 
     function loadData() {
         const raw = localStorage.getItem(getKey());
@@ -509,10 +470,22 @@
         }
     }
     function loadSalaryConfig(){
-        try{ const s = localStorage.getItem(SALARY_STORAGE); if(s) salaryConfig = JSON.parse(s); }catch(e){}
-        salaryConfig = { baseSalary:0,performance:0,otherDeduction:0,otherAllowance:0,insuranceDeduction:0,personalTax:0,manualOvertimePay:null,rentDeduction:0,mealFeeDeduction:0,highTempAllowance:0,seniorityAllowance:0,nightAllowanceManual:null, ...salaryConfig };
+        salaryConfig = {
+            baseSalary:0, performance:0, otherDeduction:0, otherAllowance:0,
+            insuranceDeduction:0, personalTax:0, manualOvertimePay:null,
+            rentDeduction:0, mealFeeDeduction:0, highTempAllowance:0, seniorityAllowance:0,
+            nightAllowanceManual:null
+        };
+        const key = getSalaryKey();
+        const raw = localStorage.getItem(key);
+        if(raw){
+            try{
+                const s = JSON.parse(raw);
+                salaryConfig = { ...salaryConfig, ...s };
+            }catch(e){}
+        }
     }
-    function saveSalaryConfig(){ localStorage.setItem(SALARY_STORAGE, JSON.stringify(salaryConfig)); }
+    function saveSalaryConfig(){ localStorage.setItem(getSalaryKey(), JSON.stringify(salaryConfig)); }
     function loadFullHours(){
         try{ const v = localStorage.getItem(FULL_HOURS_KEY); if(v !== null) fullWorkHours = parseInt(v); }catch(e){}
         if(isNaN(fullWorkHours) || fullWorkHours < 0) fullWorkHours = 0;
@@ -574,12 +547,10 @@
         modalOverlay.classList.add('show');
         setTimeout(() => $('modalOvertime').focus(), 400);
     }
-
     function closeModal(){
         modalOverlay.classList.remove('show');
         document.activeElement?.blur?.();
     }
-
     function saveModal(){
         if(selectedDay === null) return;
         data[selectedDay].normal = Math.min(24, Math.max(0, parseFloat($('modalNormal').value) || 0));
@@ -589,7 +560,6 @@
         renderAll();
         showToast('工时已保存');
     }
-
     function setShiftFromModal(shift){
         if(selectedDay === null) return;
         const def = (shift==='work'||shift==='night') ? {normal:DEF_NORMAL, overtime:DEF_OVERTIME} : {normal:0, overtime:0};
@@ -610,7 +580,6 @@
         if (calendarSection) calendarSection.classList.toggle('hidden', expandedSections.length > 0);
     }
 
-    // 新极简图标集
     const icons = {
         clock: '<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>',
         plus: '<svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
@@ -635,7 +604,10 @@
 
         const sal = computeSalary();
         const oRes = sal.overtimeRes;
-        $('monthIndicator').textContent = month;
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+                     || (!document.documentElement.hasAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const monthColor = isDark ? '#fff' : '#000';
 
         cardsWrapper.innerHTML = `
             <div class="section" id="workHoursSection">
@@ -649,6 +621,7 @@
                         <svg class="progress-ring" viewBox="0 0 44 44">
                             <circle class="ring-bg" cx="22" cy="22" r="18"/>
                             <circle class="ring-fill" cx="22" cy="22" r="18" stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 22 22)"/>
+                            <text x="22" y="22" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="600" fill="${monthColor}">${month}</text>
                         </svg>
                         <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" stroke="currentColor" fill="none"/></svg>
                     </div>
@@ -754,6 +727,13 @@
         renderCalendar();
         bindDynamicEvents();
         updateCalendarVisibility();
+
+        // 更新主题按钮文字
+        const themeBtnText = $('themeBtnText');
+        if (themeBtnText) {
+            const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            themeBtnText.textContent = current === 'dark' ? '浅色模式' : '深色模式';
+        }
     }
 
     function renderCalendar(){
@@ -777,9 +757,38 @@
         e.stopPropagation();
         dropdownMenu.classList.toggle('show');
     }
-
     function closeDropdown() {
         dropdownMenu.classList.remove('show');
+    }
+
+    function setTheme(theme) {
+        if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem(THEME_KEY, 'light');
+        } else if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem(THEME_KEY, 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.removeItem(THEME_KEY);
+        }
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light'
+                      || (!document.documentElement.hasAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: light)').matches);
+        themeMeta.setAttribute('content', isLight ? '#FF6B44' : '#FF5E3A');
+        // 更新切换按钮文字
+        const btnText = $('themeBtnText');
+        if (btnText) {
+            const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            btnText.textContent = current === 'dark' ? '浅色模式' : '深色模式';
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const next = current === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        closeDropdown();
+        showToast(next === 'dark' ? '已切换为深色模式' : '已切换为浅色模式');
     }
 
     function bindStaticEvents() {
@@ -808,7 +817,7 @@
             }
         });
 
-        $('menuExportPdf').addEventListener('click', () => { closeDropdown(); window.print(); });
+        $('switchThemeBtn').addEventListener('click', toggleTheme);
         $('menuExportBackup').addEventListener('click', () => { closeDropdown(); exportBackup(); });
         $('menuImportBackup').addEventListener('click', () => { closeDropdown(); $('backupFileInput').click(); });
         $('menuClearData').addEventListener('click', () => { closeDropdown(); clearCurrentMonth(); });
@@ -816,7 +825,6 @@
     }
 
     function bindDynamicEvents() {
-        // 满勤工时编辑
         const fullWrapper = $('fullHoursWrapper');
         if (fullWrapper) {
             const display = fullWrapper.querySelector('.display-text');
@@ -845,7 +853,6 @@
             });
         }
 
-        // 手动更正加班费编辑
         const manualWrapper = $('manualOvertimeWrapper');
         if (manualWrapper) {
             const display = manualWrapper.querySelector('.display-text');
@@ -930,7 +937,6 @@
         if(normalPayVal) normalPayVal.textContent = oRes.normalOvertimePay.toFixed(1);
         const holidayPayVal = $('holidayOvertimePayValue');
         if(holidayPayVal) holidayPayVal.textContent = oRes.holidayOvertimePay.toFixed(1);
-
         const manualDisplay = $('manualOvertimeDisplay');
         if(manualDisplay) {
             manualDisplay.textContent = salaryConfig.manualOvertimePay !== null ? salaryConfig.manualOvertimePay.toFixed(1) : '0.0';
@@ -945,6 +951,7 @@
         if (ny > 2099) return;
         year = ny; month = nm;
         loadData();
+        loadSalaryConfig();
         const max = getDays(year,month);
         if (selectedDay == null || selectedDay < 0 || selectedDay >= max) {
             const today = new Date();
@@ -958,7 +965,7 @@
         const backup = {};
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key && (key.startsWith(STORAGE_PREFIX) || key === SALARY_STORAGE || key === FULL_HOURS_KEY)) {
+            if (key && (key.startsWith(STORAGE_PREFIX) || key.startsWith(SALARY_PREFIX) || key === FULL_HOURS_KEY)) {
                 backup[key] = localStorage.getItem(key);
             }
         }
@@ -984,26 +991,22 @@
                 if (typeof obj !== 'object' || obj === null) throw new Error('格式无效');
                 for (let i = localStorage.length - 1; i >= 0; i--) {
                     const key = localStorage.key(i);
-                    if (key && (key.startsWith(STORAGE_PREFIX) || key === SALARY_STORAGE || key === FULL_HOURS_KEY)) {
+                    if (key && (key.startsWith(STORAGE_PREFIX) || key.startsWith(SALARY_PREFIX) || key === FULL_HOURS_KEY)) {
                         localStorage.removeItem(key);
                     }
                 }
                 for (const [key, value] of Object.entries(obj)) {
                     localStorage.setItem(key, value);
                 }
-                loadData();
-                loadSalaryConfig();
-                loadFullHours();
                 const today = new Date();
                 let initYear = today.getFullYear();
                 let initMonth = today.getMonth() + 1;
-                if (initYear < 2026) {
-                    initYear = 2026;
-                    initMonth = 1;
-                }
+                if (initYear < 2026) { initYear = 2026; initMonth = 1; }
                 year = initYear;
                 month = initMonth;
                 loadData();
+                loadSalaryConfig();
+                loadFullHours();
                 const max = getDays(year, month);
                 selectedDay = (today.getFullYear() === year && today.getMonth()+1 === month) ? today.getDate()-1 : 0;
                 if (selectedDay >= max) selectedDay = 0;
@@ -1017,12 +1020,18 @@
         event.target.value = '';
     }
 
-    function updateThemeColor(){
-        const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        themeMeta.setAttribute('content', isLight ? '#FF6B44' : '#FF5E3A');
+    // 初始化主题（从存储加载）
+    function initTheme() {
+        const saved = localStorage.getItem(THEME_KEY);
+        if (saved === 'light' || saved === 'dark') {
+            setTheme(saved);
+        } else {
+            // 移除属性，跟随系统
+            document.documentElement.removeAttribute('data-theme');
+            themeMeta.setAttribute('content', window.matchMedia('(prefers-color-scheme: light)').matches ? '#FF6B44' : '#FF5E3A');
+        }
     }
-    updateThemeColor();
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', updateThemeColor);
+    initTheme();
 
     window.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
@@ -1035,7 +1044,9 @@
         year = initYear;
         month = initMonth;
         selectedDay = (now.getFullYear() === year && now.getMonth()+1 === month) ? now.getDate()-1 : 0;
-        loadData(); loadSalaryConfig(); loadFullHours();
+        loadData();
+        loadSalaryConfig();
+        loadFullHours();
         bindStaticEvents();
         renderAll();
     });
